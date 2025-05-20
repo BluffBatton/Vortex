@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import UserWallet, GasStation, GlobalFuelPrice, FuelTransaction
 
 User = get_user_model()
 
@@ -40,3 +41,33 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Делаем дальше всё, как в родительском
         data = super().validate(attrs)
         return data
+    
+class UserWalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserWallet
+        fields = ['user', 'amount92', 'amount95', 'amount100', 'amountGas', 'amountDiesel']
+
+
+class GasStationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GasStation
+        fields = ['id', 'name', 'address', 'latitude', 'longitude', 'moderator', 'price92', 'price95', 'price100', 'priceGas', 'priceDiesel']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'name': {'required': True},
+            'address': {'required': True},
+        }
+
+class GlobalFuelPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GlobalFuelPrice
+        fields = ['id', 'name', 'price']
+        read_only_fields = ['id']
+
+class FuelTransactionSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = FuelTransaction
+        fields = ['id', 'fuel_type', 'amount', 'price', 'transaction_type', 'user', 'date']
+        read_only_fields = ['id','date']
