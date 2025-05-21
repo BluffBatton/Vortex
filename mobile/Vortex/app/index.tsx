@@ -1,18 +1,25 @@
+import { Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { AuthProvider, useAuth } from "@/context/auth/authProvider";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Wallet from "./wallet";
-import Login from "./login";
-import Layout from "./_layout";
+import { StyleSheet } from "react-native";
+import { PingComponent } from "../src/components/PingComponent";
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from '../src/navigation/RootNavigator';
+import { AuthProvider } from '../src/context/AuthContext';
 
-const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function Index() {
   return (
     <AuthProvider>
-      <Layout />
+        <RootNavigator />
     </AuthProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+})

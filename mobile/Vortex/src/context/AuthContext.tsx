@@ -1,69 +1,16 @@
 // // ../context/auth/authProvider.tsx
-// import React, { createContext, useContext, useEffect, useState } from 'react';
-// import axios from 'axios';
-// import * as SecureStore from 'expo-secure-store';
-
-// interface AuthContextType {
-//   token: string | null;
-//   signIn: (email: string, password: string) => Promise<boolean>;
-//   signUp: (data: { first_name: string; last_name: string; phone_number: string; email: string; password: string }) => Promise<boolean>;
-//   signOut: () => Promise<void>;
-// }
-
-// const AuthContext = createContext<AuthContextType>({} as any);
-
-// export const useAuth = () => useContext(AuthContext);
-
-// export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-//   const [token, setToken] = useState<string | null>(null);
-
-//   // при старте пытаемся загрузить токен
-//   useEffect(() => {
-//     (async () => {
-//       const saved = await SecureStore.getItemAsync('jwt');
-//       if (saved) {
-//         setToken(saved);
-//         axios.defaults.headers.common['Authorization'] = `Bearer ${saved}`;
-//       }
-//     })();
-//   }, []);
-
-//   const signIn = async (email: string, password: string) => {
-//     try {
-//       const { data } = await axios.post('http://10.0.2.2:8000/api/token/', { email, password });
-//       await SecureStore.setItemAsync('jwt', data.access);
-//       axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-//       setToken(data.access);
-//       return true;
-//     } catch {
-//       return false;
-//     }
-//   };
-
-//   const signUp = async (body: any) => {
-//     try {
-//       await axios.post('http://10.0.2.2:8000/api/user/register/', body);
-//       return true;
-//     } catch {
-//       return false;
-//     }
-//   };
-
-//   const signOut = async () => {
-//     await SecureStore.deleteItemAsync('jwt');
-//     delete axios.defaults.headers.common['Authorization'];
-//     setToken(null);
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ token, signIn, signUp, signOut }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { AxiosError } from "axios";
+
+// сразу после import axios
+axios.interceptors.request.use(req => {
+  console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
+  return req;
+});
+
+
+
 import * as SecureStore from "expo-secure-store";
 
 interface AuthProps{
@@ -105,18 +52,26 @@ export const AuthProvider = ({ children }: any) => {
     
     const register = async (first_name: string, last_name: string, phone_number: string, email: string, password: string) => {
         try {
-            return await axios.post(`${API_URL}/api/user/register/`, {
+            return await axios.post(`http://10.0.2.2:8000/api/user/register/`, {
                 first_name, last_name, phone_number, email, password
             });
+            
         } catch (e) {
-            return {error: true, message: (e as any).response.data.message};
+            //return {error: true, message: (e as any).response.data.message}; nemec
+            const error = e as AxiosError;
+            return {
+                error: true,
+                message: (error.response?.data as any)?.message || error.message
+            }
         }
     }
 
     const login = async (email: string, password: string) => {
         try{
-            const result = await axios.post(`${API_URL}/api/token/`, { email, password });
-
+            const result = await axios.post(`http://10.0.2.2:8000/api/token/`,{ email, password });
+            if (!result.data?.access) {
+                throw new Error("No access token in response");
+            }
             console.log("roketa ~ file: AuthContext.tsx:40 ~ login ~ result:", result)
 
             setAuthState({
@@ -126,7 +81,7 @@ export const AuthProvider = ({ children }: any) => {
 
             axios.defaults.headers.common["Authorization"] = `Bearer ${result.data.access}`;
 
-            await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+            await SecureStore.setItemAsync(TOKEN_KEY, result.data.access); // result.data.token or access?
             return result;
         }
         catch (e) {
@@ -143,8 +98,6 @@ export const AuthProvider = ({ children }: any) => {
             authenticated: false
         })
     }
-
-
 
     const value = {
         onRegister: register,

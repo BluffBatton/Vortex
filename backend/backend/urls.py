@@ -3,6 +3,10 @@ from django.urls import path, include
 from api.views import CreateUserView, EmailTokenObtainPairView, UserProfileView, UserWalletView, GasStationViewSet, FuelTransactionViewSet, GlobalFuelPriceViewSet, ModeratorViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
+from django.http import JsonResponse
+
+def ping_view(request):
+    return JsonResponse({'status': 'ok', 'message': 'pong'})
 
 router = DefaultRouter()
 
@@ -20,5 +24,6 @@ urlpatterns = [
     path('api/user/profile/', UserProfileView.as_view(), name='user_profile'),
     path('api/user/wallet/', UserWalletView.as_view(), name='user_wallet'),
     path('api/', include(router.urls)),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework"))
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path('api/ping/', ping_view),
 ]
