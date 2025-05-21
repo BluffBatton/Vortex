@@ -21,7 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('is_staff', None)
         validated_data.pop('is_superuser', None)
-        return get_user_model().objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        UserWallet.objects.create(user=user, amount92=0, amount95=0, amount100=0, amountGas=0, amountDiesel=0)
+        return user
 
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -71,3 +73,24 @@ class FuelTransactionSerializer(serializers.ModelSerializer):
         model = FuelTransaction
         fields = ['id', 'fuel_type', 'amount', 'price', 'transaction_type', 'user', 'date']
         read_only_fields = ['id','date']
+
+
+class ModeratorCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name',''),
+            last_name=validated_data.get('last_name',''),
+            is_staff=True,        # вот здесь
+            is_superuser=False
+        )
+        return user
+    

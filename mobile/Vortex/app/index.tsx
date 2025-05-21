@@ -1,15 +1,18 @@
-import { Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { Button, StyleSheet, Text, View } from "react-native";
+import { AuthProvider, useAuth } from "@/context/auth/authProvider";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Wallet from "./wallet";
+import Login from "./login";
+import Layout from "./_layout";
 
-export default function Index() {
+const Stack = createNativeStackNavigator();
+
+export default function App() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>EшзщыывагшщзывдлжаыявОЛп.</Text>
-    </View>
+    <AuthProvider>
+      <Layout />
+    </AuthProvider>
   );
 }

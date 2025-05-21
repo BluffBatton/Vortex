@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, EmailTokenObtainPairView, UserProfileView, UserWalletView, GasStationViewSet, FuelTransactionViewSet, GlobalFuelPriceViewSet
+from api.views import CreateUserView, EmailTokenObtainPairView, UserProfileView, UserWalletView, GasStationViewSet, FuelTransactionViewSet, GlobalFuelPriceViewSet, ModeratorViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register(r'gas-stations', GasStationViewSet, basename='gasstation')
 router.register(r'fuel-transactions', FuelTransactionViewSet, basename='fueltransaction')
 router.register(r'global-fuel-prices', GlobalFuelPriceViewSet, basename='globalfuelprice')
-
+router.register(r'moderators', ModeratorViewSet, basename='moderator')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

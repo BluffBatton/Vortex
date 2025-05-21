@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework import generics, viewsets
-from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer, GasStationSerializer, FuelTransactionSerializer
+from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer
+from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .models import CustomUser, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
@@ -39,10 +40,10 @@ class UserWalletView(generics.RetrieveAPIView):
     def get_object(self):
         return get_object_or_404(UserWallet, user=self.request.user)
     
-class GasStationViewSet(viewsets.ReadOnlyModelViewSet):
+class GasStationViewSet(viewsets.ModelViewSet):
     queryset = GasStation.objects.all()
     serializer_class = GasStationSerializer
-    permission_classes = [IsAuthenticated]  # или AllowAny для публичного списка
+    permission_classes = [IsAdminUser]  # или AllowAny для публичного списка
 
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
@@ -62,3 +63,7 @@ class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
 #     serializer_class = ModeratorSerializer
 #     permission_classes = [IsAdminUser]
 
+class ModeratorViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(is_staff=True, is_superuser=False)
+    serializer_class = ModeratorCreateSerializer
+    permission_classes = [IsAdminUser]
