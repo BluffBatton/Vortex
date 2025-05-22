@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import get_user_model
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import get_user_model, logout
 from rest_framework import generics, viewsets
 from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer
 from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
@@ -8,13 +8,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .models import CustomUser, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
 
 from django.urls import re_path as url
-from rest_framework_swagger.views import get_swagger_view
+# from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='Pastebin API')
+# schema_view = get_swagger_view(title='Pastebin API')
 
-urlpatterns = [
-    url(r'^$', schema_view)
-]
+# urlpatterns = [
+#     url(r'^$', schema_view)
+# ]
 
 User = get_user_model()
 # Create your views here.
@@ -67,3 +67,10 @@ class ModeratorViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_staff=True, is_superuser=False)
     serializer_class = ModeratorCreateSerializer
     permission_classes = [IsAdminUser]
+
+# def home(request):
+#     return render(request, 'home.html')
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect('/')
