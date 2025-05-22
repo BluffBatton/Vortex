@@ -3,14 +3,15 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { PingComponent } from "../src/components/PingComponent";
 import { NavigationContainer } from '@react-navigation/native';
-import RootNavigator from '../src/navigation/RootNavigator';
+//import RootNavigator from '../src/navigation/RootNavigator';
 import { AuthProvider } from '../src/context/AuthContext';
+import { Redirect } from 'expo-router';
 
 
 export default function Index() {
   return (
     <AuthProvider>
-        <RootNavigator />
+        <Redirect href = '/login' />
     </AuthProvider>
   );
 }

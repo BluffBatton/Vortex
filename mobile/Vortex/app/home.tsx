@@ -1,6 +1,6 @@
 // src/screens/HomeScreen.tsx
 import { View, Text, Button } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../src/context/AuthContext';
 
 const HomeScreen = () => {
   const { onLogout } = useAuth();

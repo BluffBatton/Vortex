@@ -2,16 +2,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AxiosError } from "axios";
-
+import * as SecureStore from "expo-secure-store";
 // сразу после import axios
 axios.interceptors.request.use(req => {
-  console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
+  //console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
   return req;
 });
 
 
 
-import * as SecureStore from "expo-secure-store";
+//import * as SecureStore from "expo-secure-store";
 
 interface AuthProps{
     authState?: { token: string | null; authenticated: boolean | null };
@@ -21,10 +21,51 @@ interface AuthProps{
 }
 
 const TOKEN_KEY = "jwt";
+const REFRESH_KEY = "refresh";
+
 export const API_URL = "http://10.0.2.2:8000";
+
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => useContext(AuthContext);
+
+
+axios.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry // prevent infinite loop
+    ) {
+      originalRequest._retry = true;
+
+      const refreshToken = await SecureStore.getItemAsync(REFRESH_KEY);
+      if (refreshToken) {
+        try {
+          const { data } = await axios.post(`${API_URL}/api/token/refresh/`, {
+            refresh: refreshToken,
+          });
+
+          await SecureStore.setItemAsync(TOKEN_KEY, data.access);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
+          originalRequest.headers["Authorization"] = `Bearer ${data.access}`;
+
+          return axios(originalRequest);
+        } catch (err) {
+          // refresh failed, logout
+          await SecureStore.deleteItemAsync(TOKEN_KEY);
+          await SecureStore.deleteItemAsync(REFRESH_KEY);
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+
 
 export const AuthProvider = ({ children }: any) => {
     const [authState, setAuthState] = useState<{
@@ -38,8 +79,9 @@ export const AuthProvider = ({ children }: any) => {
     useEffect(() => {
         const loadToken = async () => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
-            console.log("stored:", token)
-            if(token){
+            const refresh = await SecureStore.getItemAsync(REFRESH_KEY);
+            //console.log("stored:", token)
+            if(token && refresh){
                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
                 setAuthState({
                     token: token,
@@ -72,16 +114,17 @@ export const AuthProvider = ({ children }: any) => {
             if (!result.data?.access) {
                 throw new Error("No access token in response");
             }
-            console.log("roketa ~ file: AuthContext.tsx:40 ~ login ~ result:", result)
 
+            await SecureStore.setItemAsync(TOKEN_KEY, result.data.access); // result.data.token or access?
+            await SecureStore.setItemAsync(REFRESH_KEY, result.data.refresh);
+           // console.log("roketa ~ file: AuthContext.tsx:40 ~ login ~ result:", result)
+
+            axios.defaults.headers.common["Authorization"] = `Bearer ${result.data.access}`;
+        
             setAuthState({
                 token: result.data.access,
                 authenticated: true
             });
-
-            axios.defaults.headers.common["Authorization"] = `Bearer ${result.data.access}`;
-
-            await SecureStore.setItemAsync(TOKEN_KEY, result.data.access); // result.data.token or access?
             return result;
         }
         catch (e) {
@@ -91,7 +134,9 @@ export const AuthProvider = ({ children }: any) => {
 
     const logout = async () => {
         await SecureStore.deleteItemAsync(TOKEN_KEY);
-        axios.defaults.headers.common["Authorization"] = '';
+        await SecureStore.deleteItemAsync(REFRESH_KEY);
+        //axios.defaults.headers.common["Authorization"] = '';
+        delete axios.defaults.headers.common["Authorization"];
 
         setAuthState({
             token: null,
