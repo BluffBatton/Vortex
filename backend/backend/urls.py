@@ -26,6 +26,4 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path('api/ping/', ping_view),
-    # path("accounts/", include("allauth.urls")),
-    # path("/", include("api.urls")),
 ]
