@@ -7,6 +7,7 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WalletScreen from '../screens/WalletScreen';
 import PurchaseFuelScreen from '../screens/PurchaseFuelScreen';
+import LiqPayScreen from '../screens/LiqPayScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -88,6 +89,11 @@ export default function RootNavigator() {
         name="PurchaseFuel"
         component={PurchaseFuelScreen}
         options={{ title: 'Fuel purchase' }}
+      />
+      <Stack.Screen
+        name="LiqPay"
+        component={LiqPayScreen}
+        options={{ title: 'Оплата LiqPay' }}
       />
     </Stack.Navigator>
   ) : (

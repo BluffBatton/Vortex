@@ -1,14 +1,33 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
+from django.views import View
 from rest_framework import generics, viewsets, serializers
+from backend.settings import LIQPAY_PRIVATE_KEY, LIQPAY_PUBLIC_KEY
 from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer
 from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .models import CustomUser, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
-
 from django.urls import re_path as url
 from rest_framework_swagger.views import get_swagger_view
+
+from django.views.generic import TemplateView
+from django.shortcuts import render
+from django.http import HttpResponse
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import uuid
+
+from django.views import View
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.conf import settings
+from liqpay import LiqPay
+import uuid
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 #from backend.api import serializers
 
@@ -84,12 +103,85 @@ class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     serializer_class = GlobalFuelPriceSerializer
     permission_classes = [AllowAny]
 
-# class ModeratorViewSet(viewsets.ModelViewSet):
-#     queryset = CustomUser.objects.filter(is_staff=True)
-#     serializer_class = ModeratorSerializer
-#     permission_classes = [IsAdminUser]
-
 class ModeratorViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_staff=True, is_superuser=False)
     serializer_class = ModeratorCreateSerializer
     permission_classes = [IsAdminUser]
+
+
+
+
+class LiqPayPayView(View):
+    """
+    Отдаёт HTML-страницу с формой LiqPay, которая сразу отправляется на checkout.
+    """
+
+    template_name = 'liqpay_payment.html'
+
+    def get(self, request, *args, **kwargs):
+        # 1) Получаем параметры из query-string
+        amount = request.GET.get('amount')
+        fuel_type = request.GET.get('fuel_type', 'fuel')
+        order_id = str(uuid.uuid4())
+
+        # 2) Создаём экземпляр LiqPay с ключами из settings
+        liqpay = LiqPay(
+            settings.LIQPAY_PUBLIC_KEY,
+            settings.LIQPAY_PRIVATE_KEY
+        )
+
+        # 3) Формируем словарь параметров для LiqPay
+        params = {
+            'action': 'pay',
+            'amount': amount,
+            'currency': 'UAH',
+            'description': f'Покупка {fuel_type}',
+            'order_id': order_id,
+            'version': '3',
+            'sandbox': 1,  # 1 — тестовый режим
+            'server_url': request.build_absolute_uri('/api/liqpay/callback/'),
+            'result_url': request.build_absolute_uri('/api/liqpay/result/'),
+        }
+
+        # 4) Генерируем data и signature
+        data = liqpay.cnb_data(params)
+        signature = liqpay.cnb_signature(params)
+
+        # 5) Рендерим шаблон с form
+        return render(request, self.template_name, {
+            'data': data,
+            'signature': signature,
+        })
+
+@method_decorator(csrf_exempt, name='dispatch') # type: ignore
+class LiqPayCallbackView(View):
+    """
+    Принимает POST от LiqPay server_url
+    URL: /api/liqpay/callback/
+    """
+    def post(self, request, *args, **kwargs):
+        liqpay = liqpay(LIQPAY_PUBLIC_KEY, LIQPAY_PRIVATE_KEY)
+        data = request.POST.get('data')
+        signature = request.POST.get('signature')
+
+        # Проверяем подпись
+        valid = liqpay.check_signature(data, signature)
+        if not valid:
+            return HttpResponse(status=400)
+
+        # Декодируем данные платежа
+        payload = liqpay.decode_data_from_str(data)
+        # TODO: здесь сохраните информацию о платеже, подготовьте транзакцию и т.п.
+        print("LiqPay callback payload:", payload)
+
+        return HttpResponse('OK')
+
+class LiqPayResultView(View):
+    """
+    Опциональный экран-результат для result_url, если вы хотите показывать 
+    пользователю простую HTML-страницу об успехе/неудаче.
+    """
+    template_name = 'liqpay_result.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)

@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "corsheaders",
-    "rest_framework_swagger"
+    "rest_framework_swagger",
+    "liqpay"
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,8 @@ CORS_ALLOWS_CREDENTIALS = True  # Allow credentials to be included in CORS reque
 # ]
 
 AUTH_USER_MODEL = "api.CustomUser"
+
+LIQPAY_PUBLIC_KEY = 'sandbox_i27498359033'
+LIQPAY_PRIVATE_KEY = 'sandbox_DWbm5ICQcPsW9zpAWhzlCOaaVEdMd1o3aflMsrRb'
+
+APP_DIRS=True

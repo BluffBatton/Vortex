@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, EmailTokenObtainPairView, UserProfileView, UserWalletView, GasStationViewSet, FuelTransactionViewSet, GlobalFuelPriceViewSet, ModeratorViewSet
+from api.views import (CreateUserView, EmailTokenObtainPairView, UserProfileView, 
+                       UserWalletView, GasStationViewSet, FuelTransactionViewSet,
+                         GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView,
+                         LiqPayCallbackView, LiqPayResultView,)
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from django.http import JsonResponse
@@ -26,4 +29,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path('api/ping/', ping_view),
+
+    path('api/liqpay/pay/', LiqPayPayView.as_view(), name='liqpay_pay'),
+    path('api/liqpay/callback/', LiqPayCallbackView.as_view(), name='liqpay_callback'),
+    path('api/liqpay/result/', LiqPayResultView.as_view(), name='liqpay_result'),
 ]

@@ -55,7 +55,7 @@ export default function PurchaseFuelScreen() {
   const total = selectedFuel ? selectedFuel.price * amountNum : 0;
   const totalStr = total.toFixed(2);
 
-  const handlePurchase = async () => {
+  const handlePurchase = () => {
     if (!selectedFuel) {
       Alert.alert('Ошибка', 'Выберите тип топлива');
       return;
@@ -65,33 +65,13 @@ export default function PurchaseFuelScreen() {
       return;
     }
 
-    try {
-      await axios.post(
-        `${API_URL}/api/fuel-transactions/`,
-        {
-          fuel_type: selectedFuel.name,
-          amount: amountNum,
-          price: totalStr,          // цена за всю покупку
-          transaction_type: 'buy',
-        },
-        { headers: { Authorization: `Bearer ${authState?.token}` } }
-      );
-      Alert.alert('Успех', `Вы купили ${amountNum} л ${selectedFuel.name} за ${total.toFixed(2)} ₴`);
-
-      navigation.dispatch(
-        CommonActions.navigate({
-        name: 'Main',
-        params: {
-        screen: 'Wallet',
-    }
-  })
-);
-      setSelectedFuel(null);
-      setAmount('');
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Ошибка', 'Не удалось выполнить покупку топлива');
-    }
+    navigation.navigate({
+      name: 'LiqPay',
+      params: {
+        amount: totalStr,
+        fuel_type: selectedFuel.name
+      }
+    } as never);
   };
 
   return (
@@ -172,3 +152,31 @@ const styles = StyleSheet.create({
     textAlign:'center',
   },
 });
+
+    // try { 73
+    //   await axios.post(
+    //     `${API_URL}/api/fuel-transactions/`,
+    //     {
+    //       fuel_type: selectedFuel.name,
+    //       amount: amountNum,
+    //       price: totalStr,          // цена за всю покупку
+    //       transaction_type: 'buy',
+    //     },
+    //     { headers: { Authorization: `Bearer ${authState?.token}` } }
+    //   );
+    //   Alert.alert('Успех', `Вы купили ${amountNum} л ${selectedFuel.name} за ${total.toFixed(2)} ₴`);
+
+    //   navigation.dispatch(
+    //     CommonActions.navigate({
+    //     name: 'Main',
+    //     params: {
+    //     screen: 'Wallet',
+    //       }
+    //     })
+    //   );
+    //   setSelectedFuel(null);
+    //   setAmount('');
+    // } catch (error) {
+    //   console.error(error);
+    //   Alert.alert('Ошибка', 'Не удалось выполнить покупку топлива');
+    // } 99
