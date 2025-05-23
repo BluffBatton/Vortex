@@ -48,6 +48,7 @@ class UserWalletSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWallet
         fields = ['user', 'amount92', 'amount95', 'amount100', 'amountGas', 'amountDiesel']
+        
 
 
 class GasStationSerializer(serializers.ModelSerializer):
@@ -72,7 +73,20 @@ class FuelTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuelTransaction
         fields = ['id', 'fuel_type', 'amount', 'price', 'transaction_type', 'user', 'date']
-        read_only_fields = ['id','date']
+        read_only_fields = ['id', 'date']
+
+    def validate_fuel_type(self, value):
+        allowed_types = ['92', '95', '100', 'Gas', 'Diesel']
+        if value not in allowed_types:
+            raise serializers.ValidationError("Недопустимый тип топлива.")
+        return value
+
+    def validate_transaction_type(self, value):
+        allowed_types = ['buy', 'sell']
+        if value not in allowed_types:
+            raise serializers.ValidationError("Недопустимый тип транзакции.")
+        return value
+
 
 
 class ModeratorCreateSerializer(serializers.ModelSerializer):

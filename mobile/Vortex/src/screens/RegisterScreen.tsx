@@ -1,8 +1,7 @@
 // src/screens/RegisterScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Button } from 'react-native';
-import { useAuth } from '../src/context/AuthContext';
-import { router } from 'expo-router';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const RegisterScreen = ({ navigation }: any) => {
   const [firstName, setFirstName] = useState('');
@@ -15,7 +14,7 @@ const RegisterScreen = ({ navigation }: any) => {
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !phone || !email || !password) {
-      Alert.alert('Error', 'Fill all fields');
+      Alert.alert('Error', 'Fill every field!');
       return;
     }
 
@@ -23,13 +22,13 @@ const RegisterScreen = ({ navigation }: any) => {
     try {
       const result = await onRegister!(firstName, lastName, phone, email, password);
       if (result?.error) {
-        Alert.alert('Registration error', result.message);
+        Alert.alert('Sign Up Error', result.message);
       } else {
-        Alert.alert('Success', 'Registration was successful!');
+        Alert.alert('Success', 'You signed up successfully!');
         navigation.navigate('Login');
       }
     } catch (error) {
-      Alert.alert('Error', 'Registration was failed!');
+      Alert.alert('Error', 'Unable to sign up');
     } finally {
       setLoading(false);
     }
@@ -38,15 +37,59 @@ const RegisterScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Регистрация</Text>
-      <TextInput style={styles.input} placeholder="Имя" value={firstName} onChangeText={setFirstName} />
-      <TextInput style={styles.input} placeholder="Фамилия" value={lastName} onChangeText={setLastName} />
-      <TextInput style={styles.input} placeholder="Телефон" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-      <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-      <TextInput style={styles.input} placeholder="Пароль" secureTextEntry value={password} onChangeText={setPassword} />
-      <Button title="Зарегистрироваться" onPress={handleRegister} />
-      <Text style={styles.link} onPress={() => router.push('/login')}>
-        Уже есть аккаунт? Войти
-      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={handleRegister}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Loading' : 'Sign Up'}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.link}>Already have an account? Sign In</Text>
+      </TouchableOpacity>
     </View>
   );
 };

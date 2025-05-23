@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, serializers
 from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer
 from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -9,6 +9,8 @@ from .models import CustomUser, UserWallet, GasStation, FuelTransaction, GlobalF
 
 from django.urls import re_path as url
 from rest_framework_swagger.views import get_swagger_view
+
+#from backend.api import serializers
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -48,15 +50,39 @@ class GasStationViewSet(viewsets.ModelViewSet):
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
     permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         return FuelTransaction.objects.filter(user=self.request.user)
+
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        transaction = serializer.save(user=self.request.user)
+        wallet = self.request.user.userwallet
+
+        fuel_field_map = {
+            '92': 'amount92',
+            '95': 'amount95',
+            '100': 'amount100',
+            'Gas': 'amountGas',
+            'Diesel': 'amountDiesel',
+        }
+
+        fuel_type = transaction.fuel_type
+        amount = transaction.amount
+
+        # Проверка на допустимый тип топлива
+        if fuel_type not in fuel_field_map:
+            raise serializers.ValidationError({'fuel_type': 'Недопустимый тип топлива.'})
+
+        # Обновление соответствующего поля в кошельке
+        field_name = fuel_field_map[fuel_type]
+        current_amount = getattr(wallet, field_name, 0)
+        setattr(wallet, field_name, current_amount + amount)
+        wallet.save()
 
 class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     queryset = GlobalFuelPrice.objects.all()
     serializer_class = GlobalFuelPriceSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
 
 # class ModeratorViewSet(viewsets.ModelViewSet):
 #     queryset = CustomUser.objects.filter(is_staff=True)

@@ -41,7 +41,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -149,5 +149,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development purposes
 CORS_ALLOWS_CREDENTIALS = True  # Allow credentials to be included in CORS requests
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:19006",
+#     "exp://192.168.0.108:8081",
+#     "http://10.0.2.2:8000",
+# ]
 
 AUTH_USER_MODEL = "api.CustomUser"
