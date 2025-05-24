@@ -4,6 +4,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Act
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import { Header } from '../components/Header'
 
 type Wallet = {
   amount92: number;
@@ -42,7 +43,7 @@ export default function SpendFuelScreen() {
       <View style={styles.center}>
         <ActivityIndicator size="large" />
       </View>
-    );
+    )
   }
 
   // 2) Проверим, есть ли топливо
@@ -90,7 +91,7 @@ export default function SpendFuelScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Потратить топливо</Text>
+      <Header title="Потратить топливо" />
 
       <Text style={styles.label}>Ваш баланс:</Text>
       <View style={styles.balances}>

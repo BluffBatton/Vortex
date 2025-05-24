@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
+import { Header } from '../components/Header'
 
 type FuelPrice = {
   id: number;
@@ -71,7 +72,7 @@ export default function PurchaseFuelScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Покупка топлива</Text>
+      <Header title="Buy fuel" />
 
       <Text style={styles.label}>Выберите тип топлива:</Text>
       <View style={styles.buttonsRow}>

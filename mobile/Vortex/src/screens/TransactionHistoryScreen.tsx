@@ -12,6 +12,7 @@ import axios from 'axios'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { useAuth, API_URL } from '../context/AuthContext'
+import { Header } from '../components/Header'
 
 type Transaction = {
   id: number
@@ -65,7 +66,7 @@ export default function TransactionHistoryScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/*  <Header title="Buy fuel" /> */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -77,6 +78,7 @@ export default function TransactionHistoryScreen() {
           Transaction{'\n'}history
         </Text>
       </View>
+
 
       {/* List */}
       <FlatList

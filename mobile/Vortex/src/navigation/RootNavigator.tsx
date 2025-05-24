@@ -13,6 +13,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import StationsScreen from '../screens/StationsScreen';
 import AchievementsScreen from '../screens/AchievementsScreen';
 import TransactionHistoryScreen from '../screens/TransactionHistoryScreen';
+import ProfileEditScreen from '../screens/ProfileEditScreen';
 //import { RootStackParamList } from './types';   // <— импорт
 
 const Stack = createNativeStackNavigator();
@@ -85,7 +86,9 @@ export default function RootNavigator() {
   const { authState } = useAuth();
   
   return authState?.authenticated ? (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{
+    headerShown: false,  // убираем дефолтный заголовок
+  }}>
       {/* 1) Главная вкладочная навигация */}
       <Stack.Screen
         name="Main"
@@ -102,7 +105,7 @@ export default function RootNavigator() {
       <Stack.Screen
         name="LiqPay"
         component={LiqPayScreen}
-        options={{ title: 'LiqPay Payment' }}
+        options={{ title: 'LiqPay Payment' , headerShown: true}}
       />
       <Stack.Screen
       name = "SpendFuel"
@@ -117,6 +120,11 @@ export default function RootNavigator() {
       <Stack.Screen
       name="TransactionHistory"
       component={TransactionHistoryScreen}
+      options={{ title: 'History', headerShown: false }}
+      />
+      <Stack.Screen
+      name="ProfileEdit"
+      component={ProfileEditScreen}
       options={{ title: 'History', headerShown: false }}
       />
     </Stack.Navigator>

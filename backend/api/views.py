@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.views import View
 from rest_framework import generics, viewsets, serializers
 from backend.settings import LIQPAY_PRIVATE_KEY, LIQPAY_PUBLIC_KEY
-from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserWalletSerializer
+from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserUpdateSerializer, UserWalletSerializer
 from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -52,8 +52,9 @@ class CreateUserView(generics.CreateAPIView):
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
 
+
 class UserProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserUpdateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

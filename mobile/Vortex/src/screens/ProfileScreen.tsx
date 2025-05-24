@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
-
+import { useIsFocused } from '@react-navigation/native';
 type ProfileData = {
   first_name: string;
   last_name: string;
@@ -26,8 +26,10 @@ export default function ProfileScreen() {
   const nav = useNavigation<any>();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+const isFocused = useIsFocused();
 
   useEffect(() => {
+    if (!isFocused) return;
     axios
       .get<ProfileData>(`${API_URL}/api/user/profile/`, {
         headers: { Authorization: `Bearer ${authState?.token}` },
@@ -38,7 +40,7 @@ export default function ProfileScreen() {
         Alert.alert('Ошибка', 'Не удалось загрузить профиль');
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [isFocused]);
 
   if (loading || !profile) {
     return (
@@ -82,7 +84,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => nav.navigate('EditProfile')}
+          onPress={() => nav.navigate('ProfileEdit')}
         >
           <MaterialIcons name="person-outline" size={24} color="#2c3e50" />
           <View style={styles.menuText}>
