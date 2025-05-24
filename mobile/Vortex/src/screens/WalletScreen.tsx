@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 
 type WalletScreenNavigationProp = {
-  navigate: (screen: 'PurchaseFuel') => void;
+  navigate: (screen: 'PurchaseFuel' | 'SpendFuel') => void;
 };
 
 const WalletScreen = () => {
@@ -91,8 +91,12 @@ const WalletScreen = () => {
       </View>
 
        <Button
-         title="Купить топливо"
+         title="Buy Fuel"
          onPress={() => navigation.navigate('PurchaseFuel')}
+       />
+       <Button
+       title = "Spend Fuel"
+       onPress={() => navigation.navigate('SpendFuel')}
        />
     </ScrollView>
   );

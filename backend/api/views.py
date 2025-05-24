@@ -1,3 +1,6 @@
+import base64
+import hashlib
+import os
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.views import View
@@ -18,13 +21,15 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import uuid
-
+from rest_framework.views import APIView
+from rest_framework.decorators import action
 from django.views import View
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
 from liqpay import LiqPay
 import uuid
+from django.db import transaction
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -98,6 +103,51 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
         setattr(wallet, field_name, current_amount + amount)
         wallet.save()
 
+    @action(detail=False, methods=['post'], url_path='spend')
+    def spend(self, request):
+        # """
+        # POST /api/fuel-transactions/spend/
+        # {
+        #   "fuel_type": "92",
+        #   "amount": 10.5
+        # }
+        # """
+        user = request.user
+        fuel_type = request.data.get('fuel_type')
+        liters = request.data.get('amount')
+        try:
+            liters = float(liters)
+        except (TypeError, ValueError):
+            return Response({'detail': 'Неверное количество'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # выбор поля в кошельке
+        wallet = UserWallet.objects.get(user=user)
+        field_name = f'amount{fuel_type}'
+        if not hasattr(wallet, field_name):
+            return Response({'detail': 'Неподдерживаемый тип топлива'}, status=status.HTTP_400_BAD_REQUEST)
+
+        current = getattr(wallet, field_name)
+        if liters > current:
+            return Response({'detail': 'Недостаточно топлива в кошельке'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # атомарная операция: списываем и создаём транзакцию
+        with transaction.atomic():
+            setattr(wallet, field_name, current - liters)
+            wallet.save()
+
+            tx = FuelTransaction.objects.create(
+                user=user,
+                fuel_type=fuel_type,
+                amount=liters,
+                price=0,                # при трате мы не трогаем цену покупки
+                transaction_type='sell'
+            )
+
+        serializer = self.get_serializer(tx)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
 class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     queryset = GlobalFuelPrice.objects.all()
     serializer_class = GlobalFuelPriceSerializer
@@ -110,71 +160,114 @@ class ModeratorViewSet(viewsets.ModelViewSet):
 
 
 
+from .models import PendingPayment
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.response import Response
+from django.urls             import reverse
+from rest_framework import status
+class LiqPayPayView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes     = [IsAuthenticated]
 
-class LiqPayPayView(View):
-    """
-    Отдаёт HTML-страницу с формой LiqPay, которая сразу отправляется на checkout.
-    """
+    def get(self, request):
+        # обязательные GET-параметры
+        #amount    = request.GET.get('amount')
+        total     = request.GET.get('amount')
+        liters    = request.GET.get('liters')
+        fuel_type = request.GET.get('fuel_type')
+        if not liters or not liters or not fuel_type:
+            return Response({'detail': 'amount, liters и fuel_type обязательны'}, status=status.HTTP_400_BAD_REQUEST)
 
-    template_name = 'liqpay_payment.html'
-
-    def get(self, request, *args, **kwargs):
-        # 1) Получаем параметры из query-string
-        amount = request.GET.get('amount')
-        fuel_type = request.GET.get('fuel_type', 'fuel')
-        order_id = str(uuid.uuid4())
-
-        # 2) Создаём экземпляр LiqPay с ключами из settings
-        liqpay = LiqPay(
-            settings.LIQPAY_PUBLIC_KEY,
-            settings.LIQPAY_PRIVATE_KEY
+        # создаём “PendingPayment”
+        pending = PendingPayment.objects.create(
+            user        = request.user,
+            order_id    = str(uuid.uuid4()),
+            fuel_type   = fuel_type,
+            liters      = liters,
+            total_price = total,
         )
 
-        # 3) Формируем словарь параметров для LiqPay
+        # Собираем абсолютные урлы callback и result
+        public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://eager-dingos-behave.loca.lt/")
+        callback_url = f"{public_base}{reverse('liqpay_callback')}"
+        result_url   = f"{public_base}{reverse('liqpay_result')}"
+
+        # Генерим LiqPay форму
+        lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         params = {
-            'action': 'pay',
-            'amount': amount,
-            'currency': 'UAH',
-            'description': f'Покупка {fuel_type}',
-            'order_id': order_id,
-            'version': '3',
-            'sandbox': 1,  # 1 — тестовый режим
-            'server_url': request.build_absolute_uri('/api/liqpay/callback/'),
-            'result_url': request.build_absolute_uri('/api/liqpay/result/'),
+          'action'      : 'pay',
+          'amount'      : total,
+          'currency'    : 'UAH',
+          'description' : f'Покупка {fuel_type}',
+          'order_id'    : pending.order_id,
+          'version'     : '3',
+          'sandbox'     : 1,
+          'server_url'  : callback_url,
+          'result_url'  : result_url,
         }
+        data      = lp.cnb_data(params)
+        signature = lp.cnb_signature(params)
 
-        # 4) Генерируем data и signature
-        data = liqpay.cnb_data(params)
-        signature = liqpay.cnb_signature(params)
-
-        # 5) Рендерим шаблон с form
-        return render(request, self.template_name, {
-            'data': data,
+        # Рендерим HTML-шаблон с формой
+        return render(request, 'liqpay_form.html', {
+            'data'     : data,
             'signature': signature,
         })
 
-@method_decorator(csrf_exempt, name='dispatch') # type: ignore
-class LiqPayCallbackView(View):
-    """
-    Принимает POST от LiqPay server_url
-    URL: /api/liqpay/callback/
-    """
-    def post(self, request, *args, **kwargs):
-        liqpay = liqpay(LIQPAY_PUBLIC_KEY, LIQPAY_PRIVATE_KEY)
-        data = request.POST.get('data')
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LiqPayCallbackView(APIView):
+    permission_classes = [AllowAny]  # LiqPay не шлёт JWT
+
+    def post(self, request):
+        data      = request.POST.get('data')
         signature = request.POST.get('signature')
+        if not data or not signature:
+            return Response({'detail': 'Missing data or signature'}, status=400)
 
-        # Проверяем подпись
-        valid = liqpay.check_signature(data, signature)
-        if not valid:
-            return HttpResponse(status=400)
+        lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        # ручная проверка подписи
+        s = settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY
+        expected_sig = base64.b64encode(hashlib.sha1(s.encode('utf-8')).digest()).decode('utf-8')
+        if expected_sig != signature:
+            return Response({'detail': 'Bad signature'}, status=400)
 
-        # Декодируем данные платежа
-        payload = liqpay.decode_data_from_str(data)
-        # TODO: здесь сохраните информацию о платеже, подготовьте транзакцию и т.п.
-        print("LiqPay callback payload:", payload)
+        payload = lp.decode_data_from_str(data)
+        order_id  = payload.get('order_id')
+        status_pay = payload.get('status')
 
-        return HttpResponse('OK')
+        pending = get_object_or_404(PendingPayment, order_id=order_id)
+
+        # В режиме sandbox тоже считаем за «успех»
+        if status_pay in ('success', 'sandbox'):
+            # создаём транзакцию
+            tx = FuelTransaction.objects.create(
+                user             = pending.user,
+                fuel_type        = pending.fuel_type,
+                amount           = pending.liters,
+                price            = pending.total_price,
+                transaction_type = 'buy'
+            )
+            # обновляем кошелёк
+            wallet = pending.user.userwallet
+            field_map = {
+                '92': 'amount92',
+                '95': 'amount95',
+                '100': 'amount100',
+                'Gas': 'amountGas',
+                'Diesel': 'amountDiesel',
+            }
+            fname = field_map[pending.fuel_type]
+            setattr(wallet, fname, getattr(wallet, fname) + pending.liters)
+            wallet.save()
+
+            # если хотите, можете здесь логгировать
+            print(f"[LiqPayCallback] Credited {pending.liters}L of {pending.fuel_type} to {pending.user.email}")
+
+        # удаляем запись о «в ожидании»
+        pending.delete()
+
+        return Response({'status': 'ok'})
 
 class LiqPayResultView(View):
     """

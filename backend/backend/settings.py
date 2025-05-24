@@ -161,5 +161,7 @@ AUTH_USER_MODEL = "api.CustomUser"
 
 LIQPAY_PUBLIC_KEY = 'sandbox_i27498359033'
 LIQPAY_PRIVATE_KEY = 'sandbox_DWbm5ICQcPsW9zpAWhzlCOaaVEdMd1o3aflMsrRb'
+# settings.py
+#BACKEND_PUBLIC_URL = os.getenv("BACKEND_PUBLIC_URL", "https://silent-humans-mate.loca.lt")
 
 APP_DIRS=True

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Оплата LiqPay</title>
+</head>
+<body>
+  <h1>Redirect on LiqPay …</h1>
+  <form 
+    method="post" 
+    action="https://www.liqpay.ua/api/3/checkout" 
+    accept-charset="utf-8"
+  >
+    <!-- эти два скрытых поля подставятся из context в вашем View -->
+    <input type="hidden" name="data" value="{{ data }}" />
+    <input type="hidden" name="signature" value="{{ signature }}" />
+    <noscript>
+      <p>У вас отключен JavaScript. Нажмите кнопку ниже, чтобы перейти к оплате.</p>
+      <button type="submit">Оплатить</button>
+    </noscript>
+    <script>
+      // автоматически отправляем форму
+      document.forms[0].submit();
+    </script>
+  </form>
+</body>
+</html>

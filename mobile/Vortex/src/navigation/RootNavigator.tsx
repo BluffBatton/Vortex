@@ -8,6 +8,8 @@ import RegisterScreen from '../screens/RegisterScreen';
 import WalletScreen from '../screens/WalletScreen';
 import PurchaseFuelScreen from '../screens/PurchaseFuelScreen';
 import LiqPayScreen from '../screens/LiqPayScreen';
+import SpendFuelScreen from '../screens/SpendFuelScreen';
+//import { RootStackParamList } from './types';   // <— импорт
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -80,20 +82,28 @@ export default function RootNavigator() {
   
   return authState?.authenticated ? (
     <Stack.Navigator>
-      <Stack.Screen 
-        name="Main" 
+      {/* 1) Главная вкладочная навигация */}
+      <Stack.Screen
+        name="Main"
         component={MainTabs}
         options={{ headerShown: false }}
       />
+      {/* 2) Экран покупки топлива */}
       <Stack.Screen
         name="PurchaseFuel"
         component={PurchaseFuelScreen}
-        options={{ title: 'Fuel purchase' }}
+        options={{ title: 'Purchase Fuel' }}
       />
+      {/* 3) Экран платежей LiqPay */}
       <Stack.Screen
         name="LiqPay"
         component={LiqPayScreen}
-        options={{ title: 'Оплата LiqPay' }}
+        options={{ title: 'LiqPay Payment' }}
+      />
+      <Stack.Screen
+      name = "SpendFuel"
+      component={SpendFuelScreen}
+      options={{title: 'Spend Fuel'}}
       />
     </Stack.Navigator>
   ) : (

@@ -80,3 +80,22 @@ class FuelTransaction(models.Model):
     def __str__(self):
         return f"{self.fuel_type} - {self.date} - {self.amount} - {self.price}"
     
+from django.db import models
+from django.conf import settings
+import uuid
+
+class PendingPayment(models.Model):
+    """
+    Хранит информацию о том, какой user
+    и какую покупку (fuel_type, amount, total)
+    привязан к конкретному order_id.
+    """
+    order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    fuel_type   = models.CharField(max_length=10)
+    liters = models.DecimalField(max_digits=10, decimal_places = 2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} — {self.fuel_type}×{self.liters} = {self.total_price} (order {self.order_id})"

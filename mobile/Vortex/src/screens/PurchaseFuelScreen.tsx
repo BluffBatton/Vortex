@@ -24,7 +24,7 @@ export default function PurchaseFuelScreen() {
   const { authState } = useAuth();
   const [prices, setPrices] = useState<FuelPrice[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [selectedFuel, setSelectedFuel] = useState<FuelPrice | null>(null);
   const [amount, setAmount] = useState<string>('');
 
@@ -65,13 +65,8 @@ export default function PurchaseFuelScreen() {
       return;
     }
 
-    navigation.navigate({
-      name: 'LiqPay',
-      params: {
-        amount: totalStr,
-        fuel_type: selectedFuel.name
-      }
-    } as never);
+    navigation.navigate('LiqPay', { amount: totalStr, liters: amount, fuel_type: selectedFuel.name });
+
   };
 
   return (
