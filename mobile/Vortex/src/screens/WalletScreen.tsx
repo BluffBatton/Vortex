@@ -92,10 +92,12 @@ const WalletScreen = () => {
 
        <Button
          title="Buy Fuel"
+         color="#135452"
          onPress={() => navigation.navigate('PurchaseFuel')}
        />
        <Button
        title = "Spend Fuel"
+       color="#135452"
        onPress={() => navigation.navigate('SpendFuel')}
        />
     </ScrollView>
@@ -111,10 +113,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 20,  // Добавлено
-    marginBottom: 30,
+    marginTop: 50,  // Добавлено
+    marginBottom: 10,
     textAlign: 'center',
-    color: '#333',
+    color: '#135452',
   },
   fuelBlock: {
     backgroundColor: 'white',

@@ -9,15 +9,19 @@ import WalletScreen from '../screens/WalletScreen';
 import PurchaseFuelScreen from '../screens/PurchaseFuelScreen';
 import LiqPayScreen from '../screens/LiqPayScreen';
 import SpendFuelScreen from '../screens/SpendFuelScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import StationsScreen from '../screens/StationsScreen';
+import AchievementsScreen from '../screens/AchievementsScreen';
+import TransactionHistoryScreen from '../screens/TransactionHistoryScreen';
 //import { RootStackParamList } from './types';   // <— импорт
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // Заглушки для других экранов
-const StationsScreen = () => null;
-const AchievementsScreen = () => null;
-const ProfileScreen = () => null;
+//const StationsScreen = () => null;
+//const AchievementsScreen = () => null;
+//const ProfileScreen = () => null;
 
 function MainTabs() {
   return (
@@ -104,6 +108,16 @@ export default function RootNavigator() {
       name = "SpendFuel"
       component={SpendFuelScreen}
       options={{title: 'Spend Fuel'}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ title: 'Profile' }}
+      />
+      <Stack.Screen
+      name="TransactionHistory"
+      component={TransactionHistoryScreen}
+      options={{ title: 'History', headerShown: false }}
       />
     </Stack.Navigator>
   ) : (
