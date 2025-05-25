@@ -119,14 +119,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 50,  // Добавлено
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#135452',
-  },
+  title: { fontSize: 24, fontWeight: '600', marginBottom: 0, marginTop: 50, color: '#135452' },
   card: {
     backgroundColor: '#135452',
     borderRadius: 12,

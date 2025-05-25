@@ -108,16 +108,9 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    // backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 50,  // Добавлено
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#135452',
-  },
+  title: { fontSize: 24, fontWeight: '600', marginBottom: 16, marginTop: 50, color: '#135452' },
   fuelBlock: {
     backgroundColor: 'white',
     borderRadius: 10,

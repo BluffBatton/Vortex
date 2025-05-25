@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import UserWallet, GasStation, GlobalFuelPrice, FuelTransaction
+from .models import UserWallet, GasStation, GlobalFuelPrice, FuelTransaction, UserAchievement, Achievement
 
 User = get_user_model()
 
@@ -137,3 +137,12 @@ class ModeratorCreateSerializer(serializers.ModelSerializer):
         )
         return user
     
+
+class UserAchievementSerializer(serializers.ModelSerializer):
+    title       = serializers.CharField(source='achievement.title')
+    description = serializers.CharField(source='achievement.description')
+    icon_name   = serializers.CharField(source='achievement.icon_name')
+
+    class Meta:
+        model = UserAchievement
+        fields = ['achievement_id', 'title', 'description', 'icon_name', 'unlocked_at']

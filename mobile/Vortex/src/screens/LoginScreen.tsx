@@ -33,7 +33,9 @@ const LoginScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Вход</Text>
+      <Text style={styles.welcome}>Welcome to Vortex</Text>
+      <Text style={styles.underWelcome}>Gas stations platform</Text>
+      <Text style={styles.title}>Log in your account</Text>
       
       <TextInput
         style={styles.input}
@@ -74,36 +76,52 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#135452'
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#ffffff'
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#f0f0f0',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 15,
     marginBottom: 15,
+    backgroundColor: '#ffffff'
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 15,
   },
   buttonText: {
-    color: 'white',
+    color: 'f0f0f0',
     fontWeight: 'bold',
   },
   link: {
-    color: '#007bff',
+    color: '#ffffff',
     textAlign: 'center',
+    textDecorationLine: 'underline'
   },
+  welcome:{
+    textAlign: 'center',
+    fontSize: 40,
+    paddingBottom: 5,
+    color: '#ffffff'
+  },
+  underWelcome:{
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#ffffff',
+    paddingBottom: 50
+  }
 });
 
 export default LoginScreen;

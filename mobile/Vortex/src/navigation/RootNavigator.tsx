@@ -138,7 +138,7 @@ export default function RootNavigator() {
       <Stack.Screen 
         name="Register" 
         component={RegisterScreen}
-        options={{ title: 'Registration' }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

@@ -99,3 +99,20 @@ class PendingPayment(models.Model):
 
     def __str__(self):
         return f"{self.user.email} — {self.fuel_type}×{self.liters} = {self.total_price} (order {self.order_id})"
+
+class Achievement(models.Model):
+    code        = models.CharField(max_length=50, unique=True)
+    title       = models.CharField(max_length=100)
+    description = models.TextField()
+    icon_name   = models.CharField(max_length=50, help_text="Example: 'local-gas-station' for MaterialIcons, 'emoji-events etc.'")  # название иконки из вашего ассет-пула
+
+    def __str__(self):
+        return self.code
+
+class UserAchievement(models.Model):
+    user        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'achievement')

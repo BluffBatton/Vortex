@@ -36,7 +36,8 @@ const RegisterScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Регистрация</Text>
+      <Text style={styles.head}>Vortex</Text>
+      <Text style={styles.title}>Enroll</Text>
 
       <TextInput
         style={styles.input}
@@ -100,12 +101,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#135452'
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center',
+    color: 'white'
   },
   input: {
     height: 50,
@@ -114,22 +117,31 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 15,
     marginBottom: 15,
+    backgroundColor: 'white'
+    
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 15,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
   },
   link: {
-    color: '#007bff',
+    color: '#ffffff',
     textAlign: 'center',
+    textDecorationLine: 'underline'
   },
+  head: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 40,
+    marginBottom: 20
+  }
 });
 
 export default RegisterScreen;

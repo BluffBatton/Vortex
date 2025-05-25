@@ -1,16 +1,17 @@
 import base64
 import hashlib
 import os
+import random
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.views import View
-from rest_framework import generics, viewsets, serializers
+from rest_framework import generics, viewsets, serializers, permissions
 from backend.settings import LIQPAY_PRIVATE_KEY, LIQPAY_PUBLIC_KEY
-from .serializers import GlobalFuelPriceSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserUpdateSerializer, UserWalletSerializer
+from .serializers import GlobalFuelPriceSerializer, UserAchievementSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserUpdateSerializer, UserWalletSerializer
 from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from .models import CustomUser, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
+from .models import CustomUser, UserAchievement, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
 from django.urls import re_path as url
 from rest_framework_swagger.views import get_swagger_view
 
@@ -70,7 +71,8 @@ class UserWalletView(generics.RetrieveAPIView):
 class GasStationViewSet(viewsets.ModelViewSet):
     queryset = GasStation.objects.all()
     serializer_class = GasStationSerializer
-    permission_classes = [IsAdminUser]  # или AllowAny для публичного списка
+    #permission_classes = [IsAdminUser]  # или AllowAny для публичного списка
+    permission_classes = [AllowAny]
 
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
@@ -157,9 +159,8 @@ class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
 class ModeratorViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_staff=True, is_superuser=False)
     serializer_class = ModeratorCreateSerializer
-    permission_classes = [IsAdminUser]
-
-
+    #permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
 
 from .models import PendingPayment
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -279,3 +280,12 @@ class LiqPayResultView(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+    
+
+
+class UserAchievementsView(generics.ListAPIView):
+    serializer_class = UserAchievementSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return UserAchievement.objects.filter(user=self.request.user)
