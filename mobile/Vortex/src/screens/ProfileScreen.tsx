@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused, CommonActions } from '@react-navigation/native';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/native';
+
 type ProfileData = {
   first_name: string;
   last_name: string;
@@ -84,13 +84,12 @@ const isFocused = useIsFocused();
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => {
-            onLogout && onLogout();
-            nav.reset({ index: 0, routes: [{ name: 'Login' }] });
-          }}
-        >
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={async () => {
+              await onLogout?.();
+            }}
+          >
           <MaterialIcons name="logout" size={24} color="#c0392b" />
           <View style={styles.menuText}>
             <Text style={[styles.menuTitle, { color: '#c0392b' }]}>

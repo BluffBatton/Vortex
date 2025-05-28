@@ -4,15 +4,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AxiosError } from "axios";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import * as SecureStore from "expo-secure-store";
 
 axios.interceptors.request.use(req => {
   console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
   return req;
 });
-
-
-
-import * as SecureStore from "expo-secure-store";
 
 interface AuthState {
   token: string | null;
@@ -76,14 +73,13 @@ axios.interceptors.response.use(
         }));
 
         return axios(originalRequest);
-
+        
       } catch (refreshError) {
         await SecureStore.deleteItemAsync(TOKEN_KEY);
         await SecureStore.deleteItemAsync('REFRESH_TOKEN');
         setAuthState({ token: null, refreshToken: null, authenticated: false });
       }
     }
-    
     return Promise.reject(error);
   }
 );
@@ -106,7 +102,6 @@ axios.interceptors.response.use(
             return await axios.post(`${API_URL}/api/user/register/`, {
                 first_name, last_name, phone_number, email, password
             });
-            
         } catch (e) {
             //return {error: true, message: (e as any).response.data.message}; nemec
             const error = e as AxiosError;
