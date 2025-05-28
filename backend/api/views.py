@@ -52,6 +52,49 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+class GoogleLoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+    def post(self, request):
+        token = request.data.get('idToken')
+        if not token:
+            return Response({'detail':'idToken required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            payload = id_token.verify_oauth2_token(
+                token, 
+                google_requests.Request(),
+                settings.GOOGLE_CLIENT_ID 
+            )
+        except ValueError:
+            return Response({'detail':'Invalid idToken'}, status=status.HTTP_400_BAD_REQUEST)
+        email      = payload.get('email')
+        first_name = payload.get('given_name','')
+        last_name  = payload.get('family_name','')
+        if not email:
+            return Response({'detail':'No email'}, status=status.HTTP_400_BAD_REQUEST)
+        user, created = User.objects.get_or_create(
+            email__iexact=email,
+            defaults={
+                'first_name':first_name,
+                'last_name': last_name,
+                'password':   User.objects.make_random_password(),
+            }
+        )
+        if created:
+            UserWallet.objects.create(user=user, amount92=0, amount95=0,
+                                      amount100=0, amountGas=0, amountDiesel=0)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str (refresh.access_token),
+            'refresh': str(refresh),
+            'user': {
+              'id': user.id,
+              'email': user.email,
+              'first_name': user.first_name,
+              'last_name':  user.last_name,
+            }
+        })
+
+
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
 

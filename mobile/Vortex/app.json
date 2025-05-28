@@ -47,15 +47,7 @@
             }
           }
       ],
-      "expo-web-browser",
-      [
-      "@react-native-google-signin/google-signin",
-      {
-        "androidClientId": "24222004042-2lvodam14n70v92gqeab54ujd8ei2v3r.apps.googleusercontent.com",
-        "iosClientId":     "24222004042-n91hf96u81h2g3t0bt90207mvfad34bf.apps.googleusercontent.com",
-        "iosUrlScheme":    "com.googleusercontent.apps.24222004042-n91hf96u81h2g3t0bt90207mvfad34bf"
-      }
-      ]
+      "expo-web-browser"
     ]
   }
 }

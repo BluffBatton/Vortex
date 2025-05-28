@@ -6,10 +6,10 @@ import { AxiosError } from "axios";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as SecureStore from "expo-secure-store";
 
-axios.interceptors.request.use(req => {
-  console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
-  return req;
-});
+// axios.interceptors.request.use(req => {
+//   console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
+//   return req;
+// });
 
 interface AuthState {
   token: string | null;
@@ -34,7 +34,9 @@ interface AuthProps{
 const TOKEN_KEY = "jwt";
 const REFRESH_TOKEN = "refresh";
 export const API_URL = "http://10.0.2.2:8000";
+
 //export const ALT_API_URL = "https://eager-dingos-behave.loca.lt"
+
 const AuthContext = createContext<AuthProps>({} as AuthProps);
 
 export const useAuth = () => useContext(AuthContext);
@@ -134,13 +136,12 @@ axios.interceptors.response.use(
         }
     };
 
-    useEffect(() => {
-      GoogleSignin.configure({
-          webClientId: '24222004042-8iojd27rs19ka2ns0t2n0h5dmhgo4bc0.apps.googleusercontent.com', 
-          offlineAccess: true,
-      });
-    }, []);
-
+    // useEffect(() => {
+    //   GoogleSignin.configure({
+    //       webClientId: '24222004042-fjptt11kvs51bii54iho5t6802quldv9.apps.googleusercontent.com', 
+    //       offlineAccess: true,
+    //   });
+    // }, []);
 
       const googleLogin = async () => {
         try {
