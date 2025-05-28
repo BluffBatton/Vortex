@@ -47,7 +47,7 @@ SIMPLE_JWT = {
 
 # Application definition
 
-SITE_ID = 1
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "api",
+    'api.apps.ApiConfig',
     "rest_framework",
     "corsheaders",
     "rest_framework_swagger",
@@ -189,5 +189,20 @@ AUTHENTICATION_BACKENDS = (
 
 APP_DIRS=True
 
-LOGIN_DIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+# LOGIN_DIRECT_URL = "/"
+# LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/api/user/profile/'
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+#ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = ['email']
+ACCOUNT_SIGNUP_FIELDS = [
+
+    'email*',
+    'password1*',
+    'password2*',
+]
+
+ACCOUNT_UNIQUE_EMAIL = True
+
+SITE_ID = 2

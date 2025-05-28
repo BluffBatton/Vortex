@@ -13,6 +13,7 @@ type Transaction = {
   amount: number
   price: number
   date: string 
+  transaction_type: string
 }
 
 export default function TransactionHistoryScreen() {
@@ -40,22 +41,27 @@ export default function TransactionHistoryScreen() {
     )
   }
 
-  const renderItem = ({ item }: { item: Transaction }) => {
-    const date = new Date(item.date).toLocaleDateString()
-    const priceNum = Number(item.price);
-    return (
-      <View style={styles.item}>
-        <View style={styles.row}>
+const renderItem = ({ item }: { item: Transaction }) => {
+  const date = new Date(item.date).toLocaleDateString()
+  const priceNum = Number(item.price);
+  return (
+    <View style={styles.item}>
+      <View style={styles.row}>
+        <View>
           <Text style={styles.fuelText}>
             Fuel {item.fuel_type}, {item.amount}L
           </Text>
-          <Text style={styles.priceText}>{priceNum.toFixed(1)} ₴</Text>
+          <Text style={styles.dateText}>{date}</Text>
         </View>
-        <Text style={styles.dateText}>{date}</Text>
-        <View style={styles.separator} />
+        <View style={styles.rightColumn}>
+          <Text style={styles.priceText}>{priceNum.toFixed(1)} ₴</Text>
+          <Text style={styles.typeText}>{item.transaction_type}</Text>
+        </View>
       </View>
-    )
-  }
+      <View style={styles.separator} />
+    </View>
+  )
+}
 
   return (
     <View style={styles.container}>
@@ -82,17 +88,32 @@ export default function TransactionHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-
+  rightColumn: { 
+    alignItems: 'flex-end',
+  },
+  typeText: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 4,
+  },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fff' 
+  },
+  center: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 16,
   },
-  backBtn: { marginRight: 8 },
+  backBtn: { 
+    marginRight: 8 
+  },
   title: {
     fontSize: 28,
     lineHeight: 34,
@@ -100,9 +121,9 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#135452',
   },
-
-  list: { paddingTop: 16 },
-
+  list: { 
+    paddingTop: 16 
+  },
   item: {
     paddingHorizontal: 16,
     paddingVertical: 12,

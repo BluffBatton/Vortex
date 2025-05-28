@@ -50,7 +50,7 @@ const isFocused = useIsFocused();
       <Text style={styles.title}>Profile</Text>
           <View style={{ marginBottom: 24 }}>
       </View>
-      {/* Карточка пользователя */}
+      
       <View style={styles.card}>
         <Text style={styles.name}>
           {first_name} {last_name}
@@ -60,7 +60,6 @@ const isFocused = useIsFocused();
         <Text style={styles.cardNumber}>{cardNumber}</Text>
       </View>
 
-      {/* Меню */}
       <View style={styles.menu}>
         <TouchableOpacity
           style={styles.menuItem}
