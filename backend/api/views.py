@@ -2,9 +2,11 @@ import base64
 import hashlib
 import os
 import random
+from urllib.parse import urljoin
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.views import View
+from google.auth.transport import requests
 from rest_framework import generics, viewsets, serializers, permissions
 from backend.settings import LIQPAY_PRIVATE_KEY, LIQPAY_PUBLIC_KEY
 from .serializers import GlobalFuelPriceSerializer, UserAchievementSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserUpdateSerializer, UserWalletSerializer
@@ -14,19 +16,19 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .models import CustomUser, UserAchievement, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
 from django.urls import re_path as url
 from rest_framework_swagger.views import get_swagger_view
-
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.http import HttpResponse
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import uuid
 from rest_framework.views import APIView
 from rest_framework.decorators import action
-from django.views import View
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.conf import settings
 from liqpay import LiqPay
 import uuid
@@ -49,6 +51,19 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]  # Allow any user to create an account
+
+
+
+# from django.shortcuts import render, redirect
+# from django.contrib.auth import logout
+
+# def home(request):
+#     return render(request, "home.html")
+
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect("/")
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
@@ -96,11 +111,8 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
         fuel_type = transaction.fuel_type
         amount = transaction.amount
 
-        # Проверка на допустимый тип топлива
         if fuel_type not in fuel_field_map:
-            raise serializers.ValidationError({'fuel_type': 'Недопустимый тип топлива.'})
-
-        # Обновление соответствующего поля в кошельке
+            raise serializers.ValidationError({'fuel_type': 'Invalid fuel type.'})
         field_name = fuel_field_map[fuel_type]
         current_amount = getattr(wallet, field_name, 0)
         setattr(wallet, field_name, current_amount + amount)
@@ -108,30 +120,23 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='spend')
     def spend(self, request):
-        # """
-        # POST /api/fuel-transactions/spend/
-        # {
-        #   "fuel_type": "92",
-        #   "amount": 10.5
-        # }
-        # """
         user = request.user
         fuel_type = request.data.get('fuel_type')
         liters = request.data.get('amount')
         try:
             liters = float(liters)
         except (TypeError, ValueError):
-            return Response({'detail': 'Неверное количество'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
 
         # выбор поля в кошельке
         wallet = UserWallet.objects.get(user=user)
         field_name = f'amount{fuel_type}'
         if not hasattr(wallet, field_name):
-            return Response({'detail': 'Неподдерживаемый тип топлива'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Unsupported fuel type'}, status=status.HTTP_400_BAD_REQUEST)
 
         current = getattr(wallet, field_name)
         if liters > current:
-            return Response({'detail': 'Недостаточно топлива в кошельке'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Not enough fuel in wallet'}, status=status.HTTP_400_BAD_REQUEST)
 
         # атомарная операция: списываем и создаём транзакцию
         with transaction.atomic():
@@ -142,7 +147,7 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
                 user=user,
                 fuel_type=fuel_type,
                 amount=liters,
-                price=0,                # при трате мы не трогаем цену покупки
+                price=0,
                 transaction_type='sell'
             )
 

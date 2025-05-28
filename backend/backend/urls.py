@@ -30,8 +30,13 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path('api/ping/', ping_view),
     path('api/achievements', UserAchievementsView.as_view(), name='user_achievements'),
+    # path('api/auth/google/', GoogleLoginView.as_view(), name='google_login'),
+    path("accounts/", include("allauth.urls")),
 
     path('api/liqpay/pay/', LiqPayPayView.as_view(), name='liqpay_pay'),
     path('api/liqpay/callback/', LiqPayCallbackView.as_view(), name='liqpay_callback'),
     path('api/liqpay/result/', LiqPayResultView.as_view(), name='liqpay_result'),
 ]
+
+    #path('auth/google/', GoogleLoginView.as_view(), name='google_login'),
+    #path('api/user/exists/', user_exists, name='user_exists'),

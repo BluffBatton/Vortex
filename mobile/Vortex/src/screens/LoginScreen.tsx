@@ -7,7 +7,8 @@ const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { onLogin } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { onLogin, onGoogleLogin } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -28,6 +29,22 @@ const LoginScreen = ({ navigation }: any) => {
       Alert.alert('Error', 'Unable to log in');
     } finally {
       setLoading(false);
+    }
+  };
+
+    const handleGoogleSignIn = async () => {
+    setIsSubmitting(true);
+    try {
+      const result = await onGoogleLogin!();
+      if (result?.error) {
+        Alert.alert('Google Login Error', result.message);
+      } else {
+        navigation.replace('Main');
+      }
+    } catch {
+      Alert.alert('Error', 'Google login failed');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -61,6 +78,16 @@ const LoginScreen = ({ navigation }: any) => {
       >
         <Text style={styles.buttonText}>
           {loading ? 'Loading' : 'Login'}
+        </Text>
+      </TouchableOpacity>
+      
+            <TouchableOpacity 
+        style={styles.button} 
+        onPress={handleGoogleSignIn}
+        disabled={isSubmitting}
+      >
+        <Text style={styles.buttonText}>
+          {isSubmitting ? 'Please wait…' : 'Sign in with Google'}
         </Text>
       </TouchableOpacity>
 

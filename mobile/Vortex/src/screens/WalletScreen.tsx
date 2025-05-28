@@ -1,6 +1,6 @@
 // src/screens/WalletScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, Button, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';

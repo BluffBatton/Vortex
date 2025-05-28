@@ -47,6 +47,8 @@ SIMPLE_JWT = {
 
 # Application definition
 
+SITE_ID = 1
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,8 +60,22 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_swagger",
-    "liqpay"
+    "django.contrib.sites",
+    "liqpay",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google"
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile", "email"
+        ],
+        "AUTH_PARAMS": {"acces_type": "online"}
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,6 +84,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -163,5 +180,14 @@ LIQPAY_PUBLIC_KEY = 'sandbox_i27498359033'
 LIQPAY_PRIVATE_KEY = 'sandbox_DWbm5ICQcPsW9zpAWhzlCOaaVEdMd1o3aflMsrRb'
 # settings.py
 #BACKEND_PUBLIC_URL = os.getenv("BACKEND_PUBLIC_URL", "https://silent-humans-mate.loca.lt")
+#GOOGLE_CLIENT_ID = "24222004042-8iojd27rs19ka2ns0t2n0h5dmhgo4bc0.apps.googleusercontent.com"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+)
 
 APP_DIRS=True
+
+LOGIN_DIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

@@ -116,6 +116,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AxiosError } from "axios";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // сразу после import axios
 axios.interceptors.request.use(req => {
@@ -143,13 +144,15 @@ interface AuthProps{
     authState?: { token: string | null; authenticated: boolean | null };
     onRegister?: (first_name: string, last_name: string, phone_number: string, email: string, password: string, ) => Promise<any>;
     onLogin?: (email: string, password: string) => Promise<any>;
+    onGoogleLogin: () => Promise<any>;
     onLogout?: () => Promise<any>;
 }
 
 const TOKEN_KEY = "jwt";
 const REFRESH_TOKEN = "refresh";
 export const API_URL = "http://10.0.2.2:8000";
-const AuthContext = createContext<AuthProps>({});
+//export const ALT_API_URL = "https://eager-dingos-behave.loca.lt"
+const AuthContext = createContext<AuthProps>({} as AuthProps);
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -258,6 +261,32 @@ axios.interceptors.response.use(
         }
     };
 
+    useEffect(() => {
+      GoogleSignin.configure({
+          webClientId: '24222004042-8iojd27rs19ka2ns0t2n0h5dmhgo4bc0.apps.googleusercontent.com',          // для /auth/google/ на бэке
+          offlineAccess: true,
+      });
+    }, []);
+
+
+      const googleLogin = async () => {
+        try {
+          await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+          await GoogleSignin.signIn();
+          const { idToken } = await GoogleSignin.getTokens();
+          const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
+          if (!data.access) throw new Error('No access token');
+          await SecureStore.setItemAsync(TOKEN_KEY, data.access);
+          await SecureStore.setItemAsync(REFRESH_TOKEN, data.refresh);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+          setAuthState({ token: data.access, refreshToken: data.refresh, authenticated: true });
+          return data;
+        } catch (e) {
+          const error = e as AxiosError;
+          return { error: true, message: (error.response?.data as any)?.detail || error.message };
+        }
+      };
+
     const logout = async () => {
         await SecureStore.deleteItemAsync(TOKEN_KEY);
         axios.defaults.headers.common["Authorization"] = '';
@@ -269,6 +298,7 @@ axios.interceptors.response.use(
         onRegister: register,
         onLogin: login,
         onLogout: logout,
+        onGoogleLogin: googleLogin,
         authState
     };
 
