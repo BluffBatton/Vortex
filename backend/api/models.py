@@ -25,9 +25,9 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []  # теперь email — единственное обязательное поле
+    REQUIRED_FIELDS = []
 
-    objects = CustomUserManager()  # подключаем наш менеджер
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.email
@@ -85,11 +85,6 @@ from django.conf import settings
 import uuid
 
 class PendingPayment(models.Model):
-    """
-    Хранит информацию о том, какой user
-    и какую покупку (fuel_type, amount, total)
-    привязан к конкретному order_id.
-    """
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fuel_type   = models.CharField(max_length=10)
@@ -104,7 +99,7 @@ class Achievement(models.Model):
     code        = models.CharField(max_length=50, unique=True)
     title       = models.CharField(max_length=100)
     description = models.TextField()
-    icon_name   = models.CharField(max_length=50, help_text="Example: 'local-gas-station' for MaterialIcons, 'emoji-events etc.'")  # название иконки из вашего ассет-пула
+    icon_name   = models.CharField(max_length=50, help_text="Example: 'local-gas-station' for MaterialIcons, 'emoji-events etc.'")
 
     def __str__(self):
         return self.code

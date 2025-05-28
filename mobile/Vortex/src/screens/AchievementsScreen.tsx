@@ -24,7 +24,6 @@ export default function AchievementsScreen() {
         const maxVolume = Math.max(...txs.map(t => t.amount), 0);
         const totalSum  = txs.reduce((sum, t) => sum + t.price, 0);
 
-        // Отмечаем, какие ачивки выполнены
         const updated = ACHIEVEMENTS.map(def => {
           let unlocked = false;
           switch (def.code) {
@@ -54,21 +53,18 @@ export default function AchievementsScreen() {
     return <ActivityIndicator style={styles.center} size="large" />;
   }
 
-  // Сколько трофеев (ачивок) разблокировано
   const unlockedCount = defs.filter(d => d.unlocked).length;
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Achievements</Text>
 
-      {/* Карточка со счётчиком трофеев */}
       <View style={styles.trophiesCard}>
         <MaterialCommunityIcons name="trophy" size={36} color="#2c3e50" />
         <Text style={styles.count}>{unlockedCount}</Text>
         <Text style={styles.countLabel}>Trophies count</Text>
       </View>
 
-      {/* Список ачивок */}
       <FlatList
         data={defs}
         keyExtractor={item => item.code}
@@ -96,10 +92,22 @@ export default function AchievementsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container:    { flex: 1, padding: 16, backgroundColor: '#fff' },
-  center:       { flex: 1, justifyContent: 'center' },
-  heading:      { fontSize: 24, fontWeight: '600', marginBottom: 16, marginTop: 50, color: '#135452' },
-
+  container: {
+     flex: 1, 
+     padding: 16, 
+     backgroundColor: '#fff' 
+  },
+  center: { 
+    flex: 1, 
+    justifyContent: 'center' 
+  },
+  heading: {
+     fontSize: 24, 
+     fontWeight: '600', 
+     marginBottom: 16, 
+     marginTop: 50, 
+     color: '#135452' 
+  },
   trophiesCard: {
     backgroundColor: '#f0f0f0',
     borderRadius:    8,
@@ -107,21 +115,40 @@ const styles = StyleSheet.create({
     alignItems:      'center',
     marginBottom:    16,
   },
-  count:        { fontSize: 32, fontWeight: 'bold', color: '#135452' },
-  countLabel:   { color: '#135452' },
-
-  card:         {
-    flexDirection:  'row',
-    alignItems:     'center',
-    backgroundColor:'#fff',
-    padding:        12,
-    borderRadius:   8,
-    elevation:      2,
-    marginBottom:   12,
+  count: { 
+    fontSize: 32, 
+    fontWeight: 'bold', 
+    color: '#135452' 
   },
-  locked:       { opacity: 0.5 },
-  text:         { marginLeft: 12, flex: 1 },
-  title:        { fontSize: 16, fontWeight: '600' },
-  desc:         { fontSize: 12, color: '#666', marginTop: 4 },
-  textLocked:   { color: '#aaa' },
+  countLabel: { 
+    color: '#135452' 
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
+    elevation: 2,
+    marginBottom: 12,
+  },
+  locked: { 
+    opacity: 0.5 
+  },
+  text: { 
+    marginLeft: 12, 
+    flex: 1 
+  },
+  title: { 
+    fontSize: 16, 
+    fontWeight: '600' 
+  },
+  desc: { 
+    fontSize: 12, 
+    color: '#666', 
+    marginTop: 4 
+  },
+  textLocked: {
+     color: '#aaa' 
+  },
 });

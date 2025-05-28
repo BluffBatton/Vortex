@@ -81,7 +81,7 @@ const LoginScreen = ({ navigation }: any) => {
         </Text>
       </TouchableOpacity>
       
-            <TouchableOpacity 
+      <TouchableOpacity 
         style={styles.button} 
         onPress={handleGoogleSignIn}
         disabled={isSubmitting}

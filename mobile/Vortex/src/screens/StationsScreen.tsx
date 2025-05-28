@@ -24,7 +24,6 @@ export default function StationsScreen() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<GasStation | null>(null);
 
-  // центр карты (пример: Нью-Йорк)
   const initialRegion: Region = {
     latitude: 50.45,
     longitude: 30.52,
@@ -104,9 +103,6 @@ export default function StationsScreen() {
               <Text style={styles.fuelPrice}>{selected.priceDiesel.toFixed(2)} ₴</Text>
             </View>
           </View>
-          {/* <TouchableOpacity style={styles.closeButton} onPress={() => setSelected(null)}>
-            <Text style={styles.closeText}>Закрыть</Text>
-          </TouchableOpacity> */}
           <View style={styles.buttonsRow}>
             <TouchableOpacity
             style={styles.actionButton}

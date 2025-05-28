@@ -14,15 +14,9 @@ import StationsScreen from '../screens/StationsScreen';
 import AchievementsScreen from '../screens/AchievementsScreen';
 import TransactionHistoryScreen from '../screens/TransactionHistoryScreen';
 import ProfileEditScreen from '../screens/ProfileEditScreen';
-//import { RootStackParamList } from './types';   // <— импорт
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Заглушки для других экранов
-//const StationsScreen = () => null;
-//const AchievementsScreen = () => null;
-//const ProfileScreen = () => null;
 
 function MainTabs() {
   return (
@@ -37,8 +31,7 @@ function MainTabs() {
         headerShown: false
       }}
     >
-            {/* Заглушки для будущих экранов */}
-            <Tab.Screen 
+      <Tab.Screen 
         name="Stations" 
         component={StationsScreen}
         options={{
@@ -87,21 +80,18 @@ export default function RootNavigator() {
   
   return authState?.authenticated ? (
     <Stack.Navigator screenOptions={{
-    headerShown: false,  // убираем дефолтный заголовок
+    headerShown: false,
   }}>
-      {/* 1) Главная вкладочная навигация */}
       <Stack.Screen
         name="Main"
         component={MainTabs}
         options={{ headerShown: false }}
       />
-      {/* 2) Экран покупки топлива */}
       <Stack.Screen
         name="PurchaseFuel"
         component={PurchaseFuelScreen}
         options={{ title: 'Purchase Fuel' }}
       />
-      {/* 3) Экран платежей LiqPay */}
       <Stack.Screen
         name="LiqPay"
         component={LiqPayScreen}

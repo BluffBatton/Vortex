@@ -1,13 +1,6 @@
 // src/screens/TransactionHistoryScreen.tsx
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native'
 import axios from 'axios'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -16,10 +9,10 @@ import { Header } from '../components/Header'
 
 type Transaction = {
   id: number
-  fuel_type: string   // e.g. "95"
-  amount: number      // литры
-  price: number       // итоговая сумма
-  date: string        // ISO-строка
+  fuel_type: string
+  amount: number
+  price: number
+  date: string 
 }
 
 export default function TransactionHistoryScreen() {
@@ -34,7 +27,7 @@ export default function TransactionHistoryScreen() {
       .get<Transaction[]>(`${API_URL}/api/fuel-transactions/`, {
         headers: { Authorization: `Bearer ${authState.token}` },
       })
-      .then(res => setData(res.data))
+      .then(res => setData(res.data.reverse()))
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [authState])
@@ -66,7 +59,6 @@ export default function TransactionHistoryScreen() {
 
   return (
     <View style={styles.container}>
-      {/*  <Header title="Buy fuel" /> */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -78,9 +70,7 @@ export default function TransactionHistoryScreen() {
           Transaction{'\n'}history
         </Text>
       </View>
-
-
-      {/* List */}
+    
       <FlatList
         data={data}
         keyExtractor={i => String(i.id)}

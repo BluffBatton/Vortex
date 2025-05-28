@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useRoute, useNavigation, CommonActions } from '@react-navigation/native';
-import { useAuth, API_URL } from '../context/AuthContext';  // ← импортируем useAuth
+import { useAuth, API_URL } from '../context/AuthContext';
 
 export default function LiqPayScreen() {
-  const { authState } = useAuth();             // ← получаем токен
+  const { authState } = useAuth();
   const route      = useRoute<any>();
   const navigation = useNavigation<any>();
   const { amount, fuel_type, liters } = route.params;
@@ -19,13 +19,13 @@ export default function LiqPayScreen() {
       { 
         headers: { 
           'Accept': 'text/html',
-          'Authorization': `Bearer ${authState?.token}`    // ← теперь authState.token доступен
+          'Authorization': `Bearer ${authState?.token}`
         },
       }
     )
     .then(res => {
       if (res.status === 401) {
-        Alert.alert('Ошибка', 'Сначала выполните вход');
+        Alert.alert('Error', 'Log in first');
         return '';
       }
       return res.text();
@@ -33,7 +33,7 @@ export default function LiqPayScreen() {
     .then(setHtml)
     .catch(err => {
       console.error(err);
-      Alert.alert('Ошибка', 'Не удалось загрузить форму оплаты');
+      Alert.alert('Error', 'Unable to load payment page');
     });
   }, [amount, fuel_type, authState]);
 
@@ -52,18 +52,11 @@ export default function LiqPayScreen() {
   }
 
   return (
-    // <WebView
-    //   originWhitelist={['*']}
-    //   source={{ html }}
-    //   onNavigationStateChange={onNavigationStateChange}
-    // />\
     <WebView
       originWhitelist={['*']}
       source={{ html }}
       onNavigationStateChange={navState => {
     const url = navState.url;
-    // Если вы получили любой ответ от result_url ЛИБО пришёл callback,
-    // сразу возвращайтесь в кошелёк:
 
     if (url.startsWith(`${GLOBAL_API_URL}/api/liqpay/result`)) {
       navigation.reset({
@@ -75,7 +68,6 @@ export default function LiqPayScreen() {
       });
     }
   }}
-  // Для локал туннеля иногда помогает:
   mixedContentMode="always"
 />
   );

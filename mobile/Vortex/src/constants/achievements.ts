@@ -3,7 +3,7 @@ export interface AchievementDef {
   code: string;
   title: string;
   description: string;
-  icon: string;    // имя иконки в вашем пакете иконок
+  icon: string; 
   unlocked: boolean;
 }
 

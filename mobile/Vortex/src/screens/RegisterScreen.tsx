@@ -95,7 +95,6 @@ const RegisterScreen = ({ navigation }: any) => {
   );
 };
 
-// Используйте те же стили что и в LoginScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,

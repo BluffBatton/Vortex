@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Header } from '../components/Header'
 
 type Wallet = {
@@ -19,13 +19,13 @@ type FuelType = '92' | '95' | '100' | 'Gas' | 'Diesel';
 export default function SpendFuelScreen() {
   const { authState } = useAuth();
   const navigation = useNavigation<any>();
+  const isFocused = useIsFocused();
 
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedFuel, setSelectedFuel] = useState<FuelType | null>(null);
   const [amount, setAmount] = useState<string>('');
 
-  // 1) Загрузка баланса пользователя
   useEffect(() => {
     axios.get<Wallet>(`${API_URL}/api/user/wallet/`, {
       headers: { Authorization: `Bearer ${authState?.token}` },
@@ -33,7 +33,7 @@ export default function SpendFuelScreen() {
     .then(res => setWallet(res.data))
     .catch(err => {
       console.error(err);
-      Alert.alert('Ошибка', 'Не удалось загрузить баланс');
+      Alert.alert('Error', 'Unable to load wallet');
     })
     .finally(() => setLoading(false));
   }, []);
@@ -46,7 +46,14 @@ export default function SpendFuelScreen() {
     )
   }
 
-  // 2) Проверим, есть ли топливо
+    const colors: Record<string,string> = {
+    '92': '#28A3DD',
+    '95': '#3DBB65',
+    '100': '#F1D91A',
+    'Gas': '#E44DC3',
+    'Diesel': '#DD3B3B',
+  };
+
   const balanceFor = (fuel: FuelType) => {
     switch (fuel) {
       case '92': return wallet.amount92;
@@ -61,16 +68,16 @@ export default function SpendFuelScreen() {
 
   const handleSpend = async () => {
     if (!selectedFuel) {
-      Alert.alert('Ошибка', 'Выберите тип топлива');
+      Alert.alert('Error', 'Choose fuel type');
       return;
     }
     if (amountNum <= 0) {
-      Alert.alert('Ошибка', 'Введите количество литров');
+      Alert.alert('Error', 'Enter valid fuel amount');
       return;
     }
     const available = balanceFor(selectedFuel);
     if (amountNum > available) {
-      Alert.alert('Ошибка', `У вас только ${available} л`);
+      Alert.alert('Error', `You have only ${available} L`);
       return;
     }
 
@@ -80,92 +87,160 @@ export default function SpendFuelScreen() {
         { fuel_type: selectedFuel, amount: amountNum },
         { headers: { Authorization: `Bearer ${authState?.token}` } }
       );
-      Alert.alert('Успех', `Списано ${data.amount} л топлива типа ${data.fuel_type}`);
-      // после списания обновим баланс и вернёмся назад
+      Alert.alert('Success', `You have spent ${data.amount} L of ${data.fuel_type} fuel`);
       navigation.goBack();
     } catch (err: any) {
       console.error(err);
-      Alert.alert('Ошибка', err.response?.data?.detail || 'Не удалось списать топливо');
+      Alert.alert('Error', err.response?.data?.detail || 'Unable to spend fuel');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Header title="Потратить топливо" />
+      <Header title="Spend Fuel" />
 
-      <Text style={styles.label}>Ваш баланс:</Text>
-      <View style={styles.balances}>
-        {(['92','95','100','Gas','Diesel'] as FuelType[]).map(fuel => (
-          <View key={fuel} style={styles.balanceRow}>
-            <Text style={styles.balanceText}>{fuel}:</Text>
-            <Text style={styles.balanceValue}>{balanceFor(fuel)} л</Text>
-          </View>
-        ))}
-      </View>
-
-      <Text style={styles.label}>Выберите тип топлива:</Text>
-      <View style={styles.buttonsRow}>
-        {(['92','95','100','Gas','Diesel'] as FuelType[]).map(fuel => (
+      <Text style={styles.sectionLabel}>Choose fuel type</Text>
+      <View style={styles.grid}>
+        {(['92','95','100','Gas','Diesel'] as FuelType[]).map(f => (
           <TouchableOpacity
-            key={fuel}
+            key={f}
             style={[
-              styles.fuelButton,
-              selectedFuel === fuel && styles.fuelButtonSelected,
+              styles.card,
+              selectedFuel === f && styles.cardSelected
             ]}
-            onPress={() => setSelectedFuel(fuel)}
+            onPress={() => setSelectedFuel(f)}
+            activeOpacity={0.8}
           >
-            <Text style={[
-              styles.fuelButtonText,
-              selectedFuel === fuel && styles.fuelButtonTextSelected,
-            ]}>
-              {fuel}
+            <View style={[styles.iconCircle, { backgroundColor: colors[f] }]}></View>
+            <Text style={styles.cardTitle}>{f}</Text>
+            <Text style={styles.cardSubtitle}>
+              {balanceFor(f)} L
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.label}>Количество (л):</Text>
+      <Text style={styles.label}>Amount (L)</Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
-        placeholder="Например, 10"
+        placeholder="10"
         value={amount}
         onChangeText={setAmount}
       />
-
-      <Button title="Тратить" onPress={handleSpend} />
+      <Text style={styles.warning}>ALERT!</Text>
+      <Text style={styles.underWarning}>After pressing button "Confirm Fuel Spending", there is no way of returning fuel back</Text>
+      <TouchableOpacity style={styles.confirmButton} onPress={handleSpend}>
+        <Text style={styles.confirmText}>Confirm Spend</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  warning: {
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: "#135452"
+  },
+  underWarning: {
+    fontSize: 16,
+    color: "#135452"
+  },
   container: { padding:16, backgroundColor:'#fff' },
   center: { flex:1, justifyContent:'center', alignItems:'center' },
   heading: { fontSize:20, fontWeight:'bold', marginBottom:16, textAlign:'center' },
-  label: { marginTop:12, marginBottom:4, fontWeight:'600' },
-  balances: { marginBottom:16 },
-  balanceRow: { flexDirection:'row', justifyContent:'space-between', paddingVertical:4 },
-  balanceText: { fontSize:16, color:'#333' },
-  balanceValue: { fontSize:16, fontWeight:'600' },
-  buttonsRow: { flexDirection:'row', flexWrap:'wrap', marginBottom:16 },
-  fuelButton: {
-    borderWidth:1,
-    borderColor:'#888',
-    borderRadius:4,
-    padding:8,
-    margin:4,
+  sectionLabel: {
+    fontSize:16,
+    color:'#444',
+    marginTop: 20,
+    marginBottom:12,
+    fontWeight:'600'
   },
-  fuelButtonSelected: {
-    backgroundColor:'#2c3e50',
-    borderColor:'#2c3e50',
+
+  grid: {
+    flexDirection:'row',
+    flexWrap:'wrap',
+    justifyContent:'space-between'
   },
-  fuelButtonText: { color:'#2c3e50' },
-  fuelButtonTextSelected: { color:'#fff' },
+
+  balanceCard: {
+    width:'48%',
+    backgroundColor:'#f9f9f9',
+    borderRadius:12,
+    padding:16,
+    marginBottom:12,
+    alignItems:'center',
+    shadowColor:'#000',
+    shadowOffset:{ width:0, height:1 },
+    shadowOpacity:0.1,
+    shadowRadius:3,
+    elevation:2
+  },
+
+  card: {
+    width:'48%',
+    backgroundColor:'#fff',
+    borderRadius:12,
+    padding:16,
+    marginBottom:12,
+    alignItems:'center',
+    shadowColor:'#000',
+    shadowOffset:{ width:0, height:1 },
+    shadowOpacity:0.1,
+    shadowRadius:3,
+    elevation:2
+  },
+  cardSelected: {
+    backgroundColor:'#f0f0f0'
+  },
+
+  iconCircle: {
+    width:32,
+    height:32,
+    borderRadius:16,
+    justifyContent:'center',
+    alignItems:'center',
+    marginBottom:8
+  },
+  cardTitle: {
+    fontSize:18,
+    fontWeight:'500',
+    color:'#333'
+  },
+  cardSubtitle: {
+    fontSize:14,
+    color:'#666',
+    marginTop:4
+  },
+
+  label: {
+    fontSize:14,
+    color:'#444',
+    marginTop:16,
+    marginBottom:8,
+    fontWeight:'600'
+  },
   input: {
     borderWidth:1,
     borderColor:'#ccc',
-    borderRadius:4,
-    padding:8,
-    marginBottom:12,
+    borderRadius:8,
+    padding:12,
+    fontSize:16
+  },
+
+  confirmButton: {
+    backgroundColor:'#135452',
+    paddingVertical:14,
+    borderRadius:12,
+    alignItems:'center',
+    marginTop:30
+  },
+  confirmText: {
+    color:'#fff',
+    fontSize:18,
+    fontWeight:'600'
   },
 });

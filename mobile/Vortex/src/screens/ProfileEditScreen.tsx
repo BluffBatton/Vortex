@@ -1,15 +1,6 @@
 // src/screens/ProfileEditScreen.tsx
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  StyleSheet,
-  ScrollView,
-} from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, ScrollView } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
@@ -28,7 +19,6 @@ export default function ProfileEditScreen() {
   const [password, setPassword] = useState('')
 
   useEffect(() => {
-    // загрузка текущих данных
     axios
       .get(`${API_URL}/api/user/profile/`, {
         headers: { Authorization: `Bearer ${authState?.token}` },
@@ -42,7 +32,7 @@ export default function ProfileEditScreen() {
       })
       .catch(err => {
         console.error(err)
-        Alert.alert('Ошибка', 'Не удалось загрузить профиль')
+        Alert.alert('Error', 'Unable to load profile')
         navigation.goBack()
       })
       .finally(() => setLoading(false))
@@ -65,12 +55,12 @@ const handleSave = () => {
       headers: { Authorization: `Bearer ${authState?.token}` },
     })
     .then(() => {
-      Alert.alert('Готово', 'Данные сохранены')
+      Alert.alert('Success', 'Data has been saved')
       navigation.goBack()
     })
     .catch(err => {
       console.error(err)
-      Alert.alert('Ошибка', 'Не удалось сохранить изменения')
+      Alert.alert('Error', 'Unable to save changes')
     })
     .finally(() => setSaving(false))
 }
@@ -86,7 +76,6 @@ const handleSave = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={28} color="#135452" />
@@ -94,7 +83,6 @@ const handleSave = () => {
         <Text style={styles.title}>Profile{'\n'}Data</Text>
       </View>
 
-      {/* Form */}
       <ScrollView contentContainerStyle={styles.form}>
         <Text style={styles.label}>First Name</Text>
         <TextInput

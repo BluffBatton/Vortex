@@ -1,14 +1,6 @@
 // src/screens/ProfileScreen.tsx
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +29,7 @@ const isFocused = useIsFocused();
       .then(res => setProfile(res.data))
       .catch(err => {
         console.error(err);
-        Alert.alert('Ошибка', 'Не удалось загрузить профиль');
+        Alert.alert('Error', 'Unable to load profile');
       })
       .finally(() => setLoading(false));
   }, [isFocused]);
@@ -51,7 +43,6 @@ const isFocused = useIsFocused();
   }
 
   const { first_name, last_name, email, phone_number } = profile;
-  // Пример номера карты (можно брать из API)
   const cardNumber = '2132 5243 2342 3213';
 
   return (

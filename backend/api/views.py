@@ -50,20 +50,7 @@ User = get_user_model()
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]  # Allow any user to create an account
-
-
-
-# from django.shortcuts import render, redirect
-# from django.contrib.auth import logout
-
-# def home(request):
-#     return render(request, "home.html")
-
-
-# def logout_view(request):
-#     logout(request)
-#     return redirect("/")
+    permission_classes = [AllowAny]
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
@@ -86,7 +73,7 @@ class UserWalletView(generics.RetrieveAPIView):
 class GasStationViewSet(viewsets.ModelViewSet):
     queryset = GasStation.objects.all()
     serializer_class = GasStationSerializer
-    #permission_classes = [IsAdminUser]  # или AllowAny для публичного списка
+    #permission_classes = [IsAdminUser] 
     permission_classes = [AllowAny]
 
 class FuelTransactionViewSet(viewsets.ModelViewSet):
@@ -128,7 +115,6 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
         except (TypeError, ValueError):
             return Response({'detail': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # выбор поля в кошельке
         wallet = UserWallet.objects.get(user=user)
         field_name = f'amount{fuel_type}'
         if not hasattr(wallet, field_name):
@@ -138,7 +124,6 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
         if liters > current:
             return Response({'detail': 'Not enough fuel in wallet'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # атомарная операция: списываем и создаём транзакцию
         with transaction.atomic():
             setattr(wallet, field_name, current - liters)
             wallet.save()
@@ -177,15 +162,12 @@ class LiqPayPayView(APIView):
     permission_classes     = [IsAuthenticated]
 
     def get(self, request):
-        # обязательные GET-параметры
-        #amount    = request.GET.get('amount')
         total     = request.GET.get('amount')
         liters    = request.GET.get('liters')
         fuel_type = request.GET.get('fuel_type')
         if not liters or not liters or not fuel_type:
             return Response({'detail': 'amount, liters и fuel_type обязательны'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # создаём “PendingPayment”
         pending = PendingPayment.objects.create(
             user        = request.user,
             order_id    = str(uuid.uuid4()),
@@ -194,12 +176,10 @@ class LiqPayPayView(APIView):
             total_price = total,
         )
 
-        # Собираем абсолютные урлы callback и result
         public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://eager-dingos-behave.loca.lt/")
         callback_url = f"{public_base}{reverse('liqpay_callback')}"
         result_url   = f"{public_base}{reverse('liqpay_result')}"
 
-        # Генерим LiqPay форму
         lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         params = {
           'action'      : 'pay',
@@ -215,7 +195,6 @@ class LiqPayPayView(APIView):
         data      = lp.cnb_data(params)
         signature = lp.cnb_signature(params)
 
-        # Рендерим HTML-шаблон с формой
         return render(request, 'liqpay_form.html', {
             'data'     : data,
             'signature': signature,
@@ -224,7 +203,7 @@ class LiqPayPayView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LiqPayCallbackView(APIView):
-    permission_classes = [AllowAny]  # LiqPay не шлёт JWT
+    permission_classes = [AllowAny]
 
     def post(self, request):
         data      = request.POST.get('data')
@@ -233,7 +212,6 @@ class LiqPayCallbackView(APIView):
             return Response({'detail': 'Missing data or signature'}, status=400)
 
         lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-        # ручная проверка подписи
         s = settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY
         expected_sig = base64.b64encode(hashlib.sha1(s.encode('utf-8')).digest()).decode('utf-8')
         if expected_sig != signature:
@@ -245,9 +223,8 @@ class LiqPayCallbackView(APIView):
 
         pending = get_object_or_404(PendingPayment, order_id=order_id)
 
-        # В режиме sandbox тоже считаем за «успех»
         if status_pay in ('success', 'sandbox'):
-            # создаём транзакцию
+
             tx = FuelTransaction.objects.create(
                 user             = pending.user,
                 fuel_type        = pending.fuel_type,
@@ -255,7 +232,7 @@ class LiqPayCallbackView(APIView):
                 price            = pending.total_price,
                 transaction_type = 'buy'
             )
-            # обновляем кошелёк
+
             wallet = pending.user.userwallet
             field_map = {
                 '92': 'amount92',
@@ -268,19 +245,13 @@ class LiqPayCallbackView(APIView):
             setattr(wallet, fname, getattr(wallet, fname) + pending.liters)
             wallet.save()
 
-            # если хотите, можете здесь логгировать
             print(f"[LiqPayCallback] Credited {pending.liters}L of {pending.fuel_type} to {pending.user.email}")
 
-        # удаляем запись о «в ожидании»
         pending.delete()
 
         return Response({'status': 'ok'})
 
 class LiqPayResultView(View):
-    """
-    Опциональный экран-результат для result_url, если вы хотите показывать 
-    пользователю простую HTML-страницу об успехе/неудаче.
-    """
     template_name = 'liqpay_result.html'
 
     def get(self, request, *args, **kwargs):

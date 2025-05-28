@@ -57,19 +57,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # attrs["username"] изначально содержит то, что client прислал в "username"
         login_val = attrs.get("username")
-        
-        # Если пользователь передал email — находим его username по email
         try:
             user = User.objects.get(email__iexact=login_val)
             attrs['username'] = user.get_username()
         except User.DoesNotExist:
-            # Можно решить, что дальше передаём оригинальный login_val,
-            # и тогда authenticate упадёт, как обычно, если нет username
             pass
         
-        # Делаем дальше всё, как в родительском
         data = super().validate(attrs)
         return data
     
@@ -132,7 +126,7 @@ class ModeratorCreateSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             first_name=validated_data.get('first_name',''),
             last_name=validated_data.get('last_name',''),
-            is_staff=True,        # вот здесь
+            is_staff=True,
             is_superuser=False
         )
         return user
