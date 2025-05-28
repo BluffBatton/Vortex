@@ -57,7 +57,7 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
       
       try {
-        const refreshToken = await SecureStore.getItemAsync('REFRESH_TOKEN');
+        const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN);
 
         const refreshResponse = await axios.post(`${API_URL}/api/token/refresh/`, {
           refresh: refreshToken
@@ -73,10 +73,10 @@ axios.interceptors.response.use(
         }));
 
         return axios(originalRequest);
-        
+
       } catch (refreshError) {
         await SecureStore.deleteItemAsync(TOKEN_KEY);
-        await SecureStore.deleteItemAsync('REFRESH_TOKEN');
+        await SecureStore.deleteItemAsync(REFRESH_TOKEN);
         setAuthState({ token: null, refreshToken: null, authenticated: false });
       }
     }
