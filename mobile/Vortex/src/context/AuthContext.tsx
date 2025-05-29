@@ -136,25 +136,19 @@ axios.interceptors.response.use(
         }
     };
 
-    // useEffect(() => {
-    //   GoogleSignin.configure({
-    //       webClientId: '24222004042-fjptt11kvs51bii54iho5t6802quldv9.apps.googleusercontent.com', 
-    //       offlineAccess: true,
-    //   });
-    // }, []);
-
       const googleLogin = async () => {
         try {
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           await GoogleSignin.signIn();
           const { idToken } = await GoogleSignin.getTokens();
-          const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
-          if (!data.access) throw new Error('No access token');
-          await SecureStore.setItemAsync(TOKEN_KEY, data.access);
-          await SecureStore.setItemAsync(REFRESH_TOKEN, data.refresh);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-          setAuthState({ token: data.access, refreshToken: data.refresh, authenticated: true });
-          return data;
+          console.log('idToken: ' + idToken)
+          //const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
+          // if (!data.access) throw new Error('No access token');
+          // await SecureStore.setItemAsync(TOKEN_KEY, data.access);
+          // await SecureStore.setItemAsync(REFRESH_TOKEN, data.refresh);
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+          // setAuthState({ token: data.access, refreshToken: data.refresh, authenticated: true });
+          // return data;
         } catch (e) {
           const error = e as AxiosError;
           return { error: true, message: (error.response?.data as any)?.detail || error.message };

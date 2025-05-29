@@ -81,7 +81,7 @@ const LoginScreen = ({ navigation }: any) => {
         </Text>
       </TouchableOpacity>
       
-      {/* <TouchableOpacity 
+      <TouchableOpacity 
         style={styles.button} 
         onPress={handleGoogleSignIn}
         disabled={isSubmitting}
@@ -89,7 +89,7 @@ const LoginScreen = ({ navigation }: any) => {
         <Text style={styles.buttonText}>
           {isSubmitting ? 'Please wait…' : 'Sign in with Google'}
         </Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.link}>Don't have an account? Sign Up</Text>

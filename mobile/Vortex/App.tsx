@@ -10,10 +10,14 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export default function App() {
     useEffect(() => {
-    GoogleSignin.configure({
-    webClientId: '24222004042-agsts84ummsmrvq30j7mcm51ha2hqe74.apps.googleusercontent.com',
-    offlineAccess: true
-  })
+      GoogleSignin.configure({
+            scopes: ['https://www.googleapis.com/auth/drive'],
+            webClientId: '24222004042-agsts84ummsmrvq30j7mcm51ha2hqe74.apps.googleusercontent.com',
+            iosClientId: 'iosClientId for iOS, nothing special here',
+            offlineAccess: true,
+            forceCodeForRefreshToken: true,
+            profileImageSize: 120
+      });
   })
   return (
       <SafeAreaProvider>
