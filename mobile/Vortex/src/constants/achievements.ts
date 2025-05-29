@@ -19,7 +19,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     code: 'big_spender',
     title: 'Fixed Success',
     description: 'Buy more than 100 L of any gas at one time',
-    icon: 'currency-usd-circle-outline',
+    icon: 'currency-usd',
     unlocked: false,
   },
   {
@@ -33,7 +33,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     code: 'rich_player',
     title: 'Rich Player',
     description: 'Buy fuel for 2000 ₴ in total',
-    icon: 'currency-usd',
+    icon: 'cash-multiple',
     unlocked: false,
   },
 ];

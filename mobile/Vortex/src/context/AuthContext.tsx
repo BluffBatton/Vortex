@@ -156,7 +156,13 @@ axios.interceptors.response.use(
       };
 
     const logout = async () => {
+      try{
+        await GoogleSignin.signOut();
+      } catch (e) {
+        console.warn('Google signOut error: ', e)
+      }
         await SecureStore.deleteItemAsync(TOKEN_KEY);
+        await SecureStore.deleteItemAsync(REFRESH_TOKEN);
         axios.defaults.headers.common["Authorization"] = '';
 
         setAuthState({ token: null, refreshToken: null, authenticated: false })
