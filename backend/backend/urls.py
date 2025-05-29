@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 from api.views import (CreateUserView, EmailTokenObtainPairView, GoogleLoginView, UserProfileView, 
-                       UserWalletView, GasStationViewSet, FuelTransactionViewSet,
-                         GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView,
-                         LiqPayCallbackView, LiqPayResultView, UserAchievementsView)
+                       UserWalletView, GasStationViewSet, FuelTransactionViewSet, ValidatePromoView,
+                         GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView, LiqPayCallbackView, 
+                         LiqPayResultView, UserAchievementsView)
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from django.http import JsonResponse
@@ -32,7 +32,7 @@ urlpatterns = [
     path('api/achievements', UserAchievementsView.as_view(), name='user_achievements'),
     path("accounts/", include("allauth.urls")),
     path('api/auth/google/', GoogleLoginView.as_view(), name='google_login'),
-    
+    path('api/promo/validate/', ValidatePromoView.as_view(), name='promo_validate'),
     path('api/liqpay/pay/', LiqPayPayView.as_view(), name='liqpay_pay'),
     path('api/liqpay/callback/', LiqPayCallbackView.as_view(), name='liqpay_callback'),
     path('api/liqpay/result/', LiqPayResultView.as_view(), name='liqpay_result'),

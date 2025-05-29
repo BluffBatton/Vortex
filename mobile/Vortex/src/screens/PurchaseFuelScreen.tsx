@@ -1,5 +1,5 @@
 // src/screens/PurchaseFuelScreen.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
@@ -17,9 +17,13 @@ export default function PurchaseFuelScreen() {
   const [prices, setPrices] = useState<FuelPrice[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<any>();
-    const isFocused = useIsFocused();
+  const isFocused = useIsFocused();
   const [selectedFuel, setSelectedFuel] = useState<FuelPrice | null>(null);
   const [amount, setAmount] = useState<string>('');
+
+  const [promo, setPromo] = useState<string>('');
+  const [promoValid, setPromoValid] = useState<boolean | null>(null);
+  const [discountPercent, setDiscountPercent] = useState<number>(0);
 
   useEffect(() => {
     axios
@@ -40,6 +44,31 @@ export default function PurchaseFuelScreen() {
       .finally(() => setLoading(false));
   }, [isFocused]);
 
+    const validatePromo = useCallback(async () => {
+    if (!promo.trim()) {
+      setPromoValid(null);
+      setDiscountPercent(0);
+      return;
+    }
+    try {
+      const res = await axios.post(`${API_URL}/api/promo/validate/`,
+        { promo: promo.trim().toUpperCase() },
+        { headers: { Authorization: `Bearer ${authState?.token}` } }
+      );
+      setPromoValid(true);
+      setDiscountPercent(Number(res.data.discount_percent) || 0);
+    } catch {
+      setPromoValid(false);
+      setDiscountPercent(0);
+    }
+  }, [promo, authState?.token]);
+
+    useEffect(() => {
+    // невеликая задержка перед проверкой, чтобы не спамить сервер
+    const t = setTimeout(validatePromo, 500);
+    return () => clearTimeout(t);
+  }, [promo, validatePromo]);
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -49,7 +78,9 @@ export default function PurchaseFuelScreen() {
   }
 
   const amountNum = parseFloat(amount) || 0;
-  const total = selectedFuel ? selectedFuel.price * amountNum : 0;
+  const base = selectedFuel ? selectedFuel.price * amountNum : 0;
+  const discount = base * (discountPercent / 100);
+  const total = base - discount;
   const totalStr = total.toFixed(2);
 
   const onConfirm = () => {
@@ -113,6 +144,19 @@ export default function PurchaseFuelScreen() {
         value={amount}
         onChangeText={setAmount}
       />
+
+      <Text style={styles.label}>Promocode (Optional)</Text>
+      <TextInput
+        style={[
+          styles.input,
+          promoValid === true   && styles.inputValid,
+          promoValid === false  && styles.inputInvalid
+        ]}
+        placeholder="ENTER CODE"
+        value={promo}
+        onChangeText={setPromo}
+        autoCapitalize="characters"
+      />
       <View style={styles.totalContainer}>
         <Text style={styles.totalLabel}>Total Amount:</Text>
         <Text style={styles.totalValue}>{totalStr} ₴</Text>
@@ -126,6 +170,12 @@ export default function PurchaseFuelScreen() {
 }
 
 const styles = StyleSheet.create({
+    inputValid: {
+       borderColor:'#2ecc71' 
+  },
+    inputInvalid: { 
+      borderColor:'#e74c3c' 
+  },
     container: {
     padding:20,
     backgroundColor:'#fff'

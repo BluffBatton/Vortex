@@ -115,3 +115,16 @@ class UserAchievement(models.Model):
 
     class Meta:
         unique_together = ('user', 'achievement')
+
+class PromoCode(models.Model):
+    code = models.CharField(max_length=32, unique=True)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    expires_at = models.DateTimeField(null=True, blank=True)
+
+    def is_valid(self):
+        from django.utils import timezone
+        now = timezone.now()
+        return (self.expires_at is None or self.expires_at > now)
+
+    def __str__(self):
+        return f"{self.code} — {self.discount_percent}%"

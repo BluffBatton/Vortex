@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import UserWallet, GasStation, GlobalFuelPrice, FuelTransaction, UserAchievement, Achievement
+from .models import UserWallet, GasStation, GlobalFuelPrice, FuelTransaction, UserAchievement, Achievement, PromoCode
 
 User = get_user_model()
 
@@ -140,3 +140,13 @@ class UserAchievementSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAchievement
         fields = ['achievement_id', 'title', 'description', 'icon_name', 'unlocked_at']
+
+class PromoCodeSerializer(serializers.ModelSerializer):
+    valid = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PromoCode
+        fields = ['code', 'discount_percent', 'expires_at', 'valid']
+
+    def get_valid(self, obj):
+        return obj.is_valid()

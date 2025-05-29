@@ -38,9 +38,10 @@ const LoginScreen = ({ navigation }: any) => {
       const result = await onGoogleLogin!();
       if (result?.error) {
         Alert.alert('Google Login Error', result.message);
-      } else {
-        navigation.replace('Main');
-      }
+      } 
+      // else {
+      //   navigation.replace('Main');
+      // }
     } catch {
       Alert.alert('Error', 'Google login failed');
     } finally {

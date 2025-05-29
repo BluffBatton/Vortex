@@ -10,10 +10,10 @@ from google.auth.transport import requests
 from rest_framework import generics, viewsets, serializers, permissions
 from backend.settings import LIQPAY_PRIVATE_KEY, LIQPAY_PUBLIC_KEY
 from .serializers import GlobalFuelPriceSerializer, UserAchievementSerializer, UserSerializer, EmailTokenObtainPairSerializer, UserUpdateSerializer, UserWalletSerializer
-from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer
+from .serializers import GasStationSerializer, FuelTransactionSerializer, ModeratorCreateSerializer, PromoCodeSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from .models import CustomUser, UserAchievement, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice
+from .models import CustomUser, UserAchievement, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice, PromoCode
 from django.urls import re_path as url
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -98,10 +98,26 @@ class GoogleLoginView(APIView):
             }
         })
 
+class ValidatePromoView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        code = request.data.get('promo', '').strip().upper()
+        try:
+            promo = PromoCode.objects.get(code=code)
+        except PromoCode.DoesNotExist:
+            return Response({'valid': False, 'detail': 'Unknown promo code'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        if not promo.is_valid():
+            return Response({'valid': False, 'detail': 'Promo expired'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        data = PromoCodeSerializer(promo).data
+        return Response({'valid': True, **data})
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
-
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserUpdateSerializer
