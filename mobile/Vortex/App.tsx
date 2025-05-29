@@ -7,7 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 
-
+//GOOGLE_CLIENT_ID = '24222004042-fjptt11kvs51bii54iho5t6802quldv9.apps.googleusercontent.com'
 export default function App() {
     useEffect(() => {
       GoogleSignin.configure({

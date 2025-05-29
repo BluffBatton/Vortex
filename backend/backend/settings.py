@@ -207,4 +207,4 @@ ACCOUNT_UNIQUE_EMAIL = True
 
 SITE_ID = 2
 
-GOOGLE_CLIENT_ID = '24222004042-fjptt11kvs51bii54iho5t6802quldv9.apps.googleusercontent.com'
+GOOGLE_CLIENT_ID = '24222004042-agsts84ummsmrvq30j7mcm51ha2hqe74.apps.googleusercontent.com'

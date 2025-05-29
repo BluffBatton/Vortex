@@ -1,3 +1,4 @@
+import secrets
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 # Create your models here.
@@ -17,6 +18,9 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
+    
+    def make_random_password(self, length=12, allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'):
+        return ''.join(secrets.choice(allowed_chars) for i in range(length))
     
 
 class CustomUser(AbstractUser):

@@ -80,6 +80,10 @@ class GoogleLoginView(APIView):
             }
         )
         if created:
+            random_pass = User.objects.make_random_password()
+            # хешируем и сохраняем
+            user.set_password(random_pass)
+            user.save(update_fields=['password'])
             UserWallet.objects.create(user=user, amount92=0, amount95=0,
                                       amount100=0, amountGas=0, amountDiesel=0)
         refresh = RefreshToken.for_user(user)

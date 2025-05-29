@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: any) => {
     }>({ token: null, refreshToken: null, authenticated: null, })
 
       axios.interceptors.request.use(req => {
-    console.log("[axios req]", req.method?.toUpperCase(), req.url, req.data);
+    // console.log("[axios req]", req.method?.toUpperCase(), req.url, req.data);
     return req;
   });
 
@@ -141,14 +141,14 @@ axios.interceptors.response.use(
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           await GoogleSignin.signIn();
           const { idToken } = await GoogleSignin.getTokens();
-          console.log('idToken: ' + idToken)
-          //const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
-          // if (!data.access) throw new Error('No access token');
-          // await SecureStore.setItemAsync(TOKEN_KEY, data.access);
-          // await SecureStore.setItemAsync(REFRESH_TOKEN, data.refresh);
-          // axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
-          // setAuthState({ token: data.access, refreshToken: data.refresh, authenticated: true });
-          // return data;
+          // console.log('idToken: ' + idToken)
+          const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
+          if (!data.access) throw new Error('No access token');
+          await SecureStore.setItemAsync(TOKEN_KEY, data.access);
+          await SecureStore.setItemAsync(REFRESH_TOKEN, data.refresh);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+          setAuthState({ token: data.access, refreshToken: data.refresh, authenticated: true });
+          return data;
         } catch (e) {
           const error = e as AxiosError;
           return { error: true, message: (error.response?.data as any)?.detail || error.message };

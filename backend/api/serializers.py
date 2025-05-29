@@ -40,7 +40,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         user = self.context['request'].user
         if User.objects.exclude(pk=user.pk).filter(email=value).exists():
-            raise serializers.ValidationError("Этот email уже используется.")
+            raise serializers.ValidationError("This email is already been used")
         return value
 
     def update(self, instance, validated_data):
