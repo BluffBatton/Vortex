@@ -8,4 +8,4 @@ pytz
 sqlparse
 psycopg2-binary
 python-dotenv
-liqpay==1.1.0
+liqpay
