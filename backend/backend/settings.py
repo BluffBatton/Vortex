@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     "rest_framework",
     "corsheaders",
-    "rest_framework_swagger",
     "django.contrib.sites",
     "liqpay",
     "allauth",

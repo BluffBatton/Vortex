@@ -15,7 +15,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .models import CustomUser, UserAchievement, UserWallet, GasStation, FuelTransaction, GlobalFuelPrice, PromoCode
 from django.urls import re_path as url
-from rest_framework_swagger.views import get_swagger_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.generic import TemplateView
 from django.shortcuts import render
@@ -39,11 +38,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 #from backend.api import serializers
 
-schema_view = get_swagger_view(title='Pastebin API')
-
-urlpatterns = [
-    url(r'^$', schema_view)
-]
 
 User = get_user_model()
 class CreateUserView(generics.CreateAPIView):
