@@ -11,3 +11,4 @@ python-dotenv
 liqpay
 django-liqpay
 django-allauth
+mysqlclient
