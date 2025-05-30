@@ -12,3 +12,4 @@ liqpay
 django-liqpay
 django-allauth
 pymysql
+requests

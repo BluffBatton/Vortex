@@ -50,41 +50,50 @@ export const AuthProvider = ({ children }: any) => {
     return req;
   });
 
-axios.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
+  axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      const status = error.response?.status;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      
-      try {
-        const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN);
+      const isRefreshEndpoint =
+        originalRequest.url?.endsWith("/api/token/refresh/") ?? false;
 
-        const refreshResponse = await axios.post(`${API_URL}/api/token/refresh/`, {
-          refresh: refreshToken
-        });
+      if (status === 401 && !originalRequest._retry && !isRefreshEndpoint) {
+        originalRequest._retry = true;
 
-        await SecureStore.setItemAsync(TOKEN_KEY, refreshResponse.data.access);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${refreshResponse.data.access}`;
-        originalRequest.headers["Authorization"] = `Bearer ${refreshResponse.data.access}`;
+        const storedRefresh = await SecureStore.getItemAsync(REFRESH_TOKEN);
+        if (!storedRefresh) {
+          setAuthState({ token: null, refreshToken: null, authenticated: false });
+          return Promise.reject(error);
+        }
 
-        setAuthState(prev => ({
-          ...prev,
-          token: refreshResponse.data.access
-        }));
+        try {
+          const refreshResponse = await axios.post(
+            `${API_URL}/api/token/refresh/`,
+            { refresh: storedRefresh }
+          );
 
-        return axios(originalRequest);
+          const newAccess = refreshResponse.data.access;
+          await SecureStore.setItemAsync(TOKEN_KEY, newAccess);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${newAccess}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newAccess}`;
 
-      } catch (refreshError) {
-        await SecureStore.deleteItemAsync(TOKEN_KEY);
-        await SecureStore.deleteItemAsync(REFRESH_TOKEN);
-        setAuthState({ token: null, refreshToken: null, authenticated: false });
+          setAuthState((prev) => ({
+            ...prev,
+            token: newAccess,
+          }));
+          return axios(originalRequest);
+        } catch {
+          await SecureStore.deleteItemAsync(TOKEN_KEY);
+          await SecureStore.deleteItemAsync(REFRESH_TOKEN);
+          setAuthState({ token: null, refreshToken: null, authenticated: false });
+        }
       }
+
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
-);
+  );
 
     useEffect(() => {
         const loadToken = async () => {
