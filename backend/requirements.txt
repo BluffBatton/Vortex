@@ -13,3 +13,4 @@ django-liqpay
 django-allauth
 pymysql
 requests
+cryptography
