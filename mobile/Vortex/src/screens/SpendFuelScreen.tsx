@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Header } from '../components/Header'
+import Toast from 'react-native-toast-message';
 
 type Wallet = {
   amount92: number;
@@ -68,16 +69,31 @@ export default function SpendFuelScreen() {
 
   const handleSpend = async () => {
     if (!selectedFuel) {
-      Alert.alert('Error', 'Choose fuel type');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: `Choose fuel type`,
+        position: 'bottom',
+      });
       return;
     }
     if (amountNum <= 0) {
-      Alert.alert('Error', 'Enter valid fuel amount');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: `Enter valid fuel amount`,
+        position: 'bottom',
+      });
       return;
     }
     const available = balanceFor(selectedFuel);
     if (amountNum > available) {
-      Alert.alert('Error', `You have only ${available} L`);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: `You have only ${available} L`,
+        position: 'bottom',
+      });
       return;
     }
 
@@ -87,9 +103,15 @@ export default function SpendFuelScreen() {
         { fuel_type: selectedFuel, amount: amountNum },
         { headers: { Authorization: `Bearer ${authState?.token}` } }
       );
-      Alert.alert('Success', `You have spent ${data.amount} L of ${data.fuel_type} fuel`);
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: `You have spent ${data.amount} L of ${data.fuel_type} fuel`,
+        position: 'bottom',
+      });
       navigation.goBack();
     } catch (err: any) {
+
       console.error(err);
       Alert.alert('Error', err.response?.data?.detail || 'Unable to spend fuel');
     }

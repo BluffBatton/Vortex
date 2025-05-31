@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
 const RegisterScreen = ({ navigation }: any) => {
   const [firstName, setFirstName] = useState('');
@@ -31,22 +32,39 @@ const RegisterScreen = ({ navigation }: any) => {
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !phone || !email || !password) {
-      Alert.alert('Error', 'Fill every field!');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Fill every field!',
+        position: 'bottom',
+      });
       return;
     }
     if (!validateEmail(email)) {
-      Alert.alert('Error', 'Invalid email address');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Invalid email address!',
+        position: 'bottom',
+      });
       return;
     }
     if (!validatePhone(phone)) {
-      Alert.alert('Error', 'Invalid phone number');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Invalid phone number!',
+        position: 'bottom',
+      });
       return;
     }
     if (!validatePassword(password)) {
-      Alert.alert(
-        'Error',
-        'Password must contain at least 8 symbols, including 1 letter and 1 number'
-      );
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Invalid password! Check notes',
+        position: 'bottom',
+      });
       return;
     }
     setLoading(true);
@@ -55,7 +73,12 @@ const RegisterScreen = ({ navigation }: any) => {
       if (result?.error) {
         Alert.alert('Sign Up Error', result.message);
       } else {
-        Alert.alert('Success', 'You signed up successfully!');
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'You have registered! Now log in your account',
+        position: 'bottom',
+      });
         navigation.navigate('Login');
       }
     } catch (error) {

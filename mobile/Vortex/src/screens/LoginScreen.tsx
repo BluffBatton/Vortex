@@ -25,12 +25,12 @@ const LoginScreen = ({ navigation }: any) => {
       // else {
       //   navigation.replace('Main')
       // }
-    } catch (error) {
-      Alert.alert('Error', 'Unable to log in');
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (error) {
+        Alert.alert('Error', 'Unable to log in: ' + error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     const handleGoogleSignIn = async () => {
     setIsSubmitting(true);
@@ -42,12 +42,12 @@ const LoginScreen = ({ navigation }: any) => {
       // else {
       //   navigation.replace('Main');
       // }
-    } catch {
-      Alert.alert('Error', 'Google login failed');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      } catch {
+        Alert.alert('Error', 'Google login failed');
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
 
   return (
     <View style={styles.container}>

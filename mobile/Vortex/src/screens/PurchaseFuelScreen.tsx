@@ -5,6 +5,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Act
 import axios from 'axios';
 import { useAuth, API_URL } from '../context/AuthContext';
 import { Header } from '../components/Header'
+import Toast from 'react-native-toast-message';
 
 type FuelPrice = {
   id: number;
@@ -85,11 +86,21 @@ export default function PurchaseFuelScreen() {
 
   const onConfirm = () => {
     if (!selectedFuel) {
-      Alert.alert('Error', 'Choose fuel type');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Choose fuel type',
+        position: 'bottom',
+      });
       return;
     }
     if (amountNum <= 0) {
-      Alert.alert('Error', 'Enter valid fuel amount');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Invalid fuel amount',
+        position: 'bottom',
+      });
       return;
     }
     navigation.navigate('LiqPay', {

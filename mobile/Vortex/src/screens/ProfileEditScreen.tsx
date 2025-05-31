@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useAuth, API_URL } from '../context/AuthContext'
+import Toast from 'react-native-toast-message'
 
 export default function ProfileEditScreen() {
   const { authState } = useAuth()
@@ -55,7 +56,12 @@ const handleSave = () => {
       headers: { Authorization: `Bearer ${authState?.token}` },
     })
     .then(() => {
-      Alert.alert('Success', 'Data has been saved')
+            Toast.show({
+              type: 'success',
+              text1: 'Success',
+              text2: 'Data has been saved',
+              position: 'bottom',
+            });
       navigation.goBack()
     })
     .catch(err => {
