@@ -9,3 +9,6 @@ sqlparse
 psycopg2-binary
 python-dotenv
 liqpay
+liqpay-sdk-python3
+liqpay-python3
+liqpay3
