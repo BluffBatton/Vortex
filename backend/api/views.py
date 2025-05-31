@@ -29,7 +29,10 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from django.shortcuts import render
 from django.conf import settings
+#from liqpay3 import liqpay
+#from liqpay import LiqPay
 from liqpay import LiqPay
+
 import uuid
 from django.db import transaction
 
@@ -238,11 +241,12 @@ class LiqPayPayView(APIView):
             total_price = total,
         )
 
-        public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://gregarious-happiness-production.up.railway.app")
+        public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://eager-dingos-behave.loca.lt/")
         callback_url = f"{public_base}{reverse('liqpay_callback')}"
         result_url   = f"{public_base}{reverse('liqpay_result')}"
 
         lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        #lp = liqpay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         params = {
           'action'      : 'pay',
           'amount'      : total,
@@ -274,6 +278,7 @@ class LiqPayCallbackView(APIView):
             return Response({'detail': 'Missing data or signature'}, status=400)
 
         lp = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        #lp = liqpay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         s = settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY
         expected_sig = base64.b64encode(hashlib.sha1(s.encode('utf-8')).digest()).decode('utf-8')
         if expected_sig != signature:

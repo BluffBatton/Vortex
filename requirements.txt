@@ -8,7 +8,10 @@ pytz
 sqlparse
 psycopg2-binary
 python-dotenv
-liqpay
+django-allauth
+pymysql
+requests
+cryptography
+google-auth
+gunicorn
 liqpay-sdk-python3
-liqpay-python3
-liqpay3

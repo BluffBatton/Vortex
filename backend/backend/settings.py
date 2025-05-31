@@ -113,31 +113,31 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = { #HewpphP9vQ root
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'vortex',
-#         'USER': 'root',
-#         'PASSWORD': 'HewpphP9vQ',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
-DATABASES = {
+DATABASES = { #HewpphP9vQ root
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQLDATABASE'),
-        'USER': os.getenv('MYSQLUSER'),
-        'PASSWORD': os.getenv('MYSQLPASSWORD'),
-        'HOST': os.getenv('MYSQLHOST'),
-        'PORT': os.getenv('MYSQLPORT'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+        'NAME': 'vortex',
+        'USER': 'root',
+        'PASSWORD': 'HewpphP9vQ',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('MYSQLDATABASE'),
+#         'USER': os.getenv('MYSQLUSER'),
+#         'PASSWORD': os.getenv('MYSQLPASSWORD'),
+#         'HOST': os.getenv('MYSQLHOST'),
+#         'PORT': os.getenv('MYSQLPORT'),
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
