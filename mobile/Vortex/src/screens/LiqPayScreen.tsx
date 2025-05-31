@@ -11,7 +11,7 @@ export default function LiqPayScreen() {
   const navigation = useNavigation<any>();
   const { amount, fuel_type, liters } = route.params;
   const [html, setHtml] = useState<string|null>(null);
-      const GLOBAL_API_URL = 'https://eager-dingos-behave.loca.lt';
+      const GLOBAL_API_URL = 'https://gregarious-happiness-production.up.railway.app';
 
   useEffect(() => {
     fetch(

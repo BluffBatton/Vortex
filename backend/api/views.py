@@ -238,7 +238,7 @@ class LiqPayPayView(APIView):
             total_price = total,
         )
 
-        public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://eager-dingos-behave.loca.lt/")
+        public_base = os.environ.get("BACKEND_PUBLIC_URL", "https://gregarious-happiness-production.up.railway.app")
         callback_url = f"{public_base}{reverse('liqpay_callback')}"
         result_url   = f"{public_base}{reverse('liqpay_result')}"
 

@@ -33,7 +33,7 @@ interface AuthProps{
 
 const TOKEN_KEY = "jwt";
 const REFRESH_TOKEN = "refresh";
-export const API_URL = "http://10.0.2.2:8000";
+export const API_URL = "https://gregarious-happiness-production.up.railway.app";
 
 //export const ALT_API_URL = "https://eager-dingos-behave.loca.lt"
 
