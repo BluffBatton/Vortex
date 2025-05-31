@@ -1,0 +1,76 @@
+.cafe-main {
+	padding: 80px 150px;
+	max-width: 100%;
+	width: 100%;
+}
+
+.cafe-intro {
+	margin-bottom: 10px;
+}
+
+.cafe-title {
+	font-size: 80px;
+	color: #0b2525;
+	margin-bottom: 100px;
+	font-weight: bold;
+}
+
+.cafe-subtitle {
+	font-size: 30px;
+	color: #0b3f3c;
+	line-height: 1.5;
+}
+
+.cafe-items {
+	display: flex;
+	flex-direction: column;
+	gap: 60px;
+}
+
+.cafe-item {
+	display: flex;
+	align-items: center;
+	gap: 40px;
+}
+
+.cafe-item--reverse {
+	flex-direction: row-reverse;
+}
+
+.cafe-item__img {
+	width: 40%;
+	height: auto;
+	object-fit: contain;
+}
+
+.cafe-item__content {
+	flex: 1;
+}
+
+.cafe-item__title {
+	font-size: 52px;
+	color: #0b2525;
+	margin-bottom: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.cafe-item__description {
+	font-size: 24px;
+	line-height: 1.6;
+	color: #0b3f3c;
+	text-align: center;
+}
+
+.cafe-item__title_left {
+	font-size: 52px;
+	color: #0b2525;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+
+.cafe-item__description_left {
+	font-size: 24px;
+	line-height: 1.6;
+	color: #0b3f3c;
+}

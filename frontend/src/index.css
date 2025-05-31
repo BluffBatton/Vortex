@@ -1,0 +1,29 @@
+/* Глобальные стили */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Arial', sans-serif;
+}
+
+/* Стили для body с твоими текущими настройками */
+body {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background-color: #f5f5f5;
+
+	/* Можно добавить, если хочешь плавность шрифтов, аналогично изначальному */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Стили для кода — сохраняем моноширинный шрифт */
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+}
+
+.no_underline {
+	text-decoration: none;
+}
