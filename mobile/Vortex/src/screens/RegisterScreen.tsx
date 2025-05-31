@@ -12,12 +12,43 @@ const RegisterScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false);
   const { onRegister } = useAuth();
 
+  const validateEmail = (email: string): boolean => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    const digitsOnly = phone.replace(/\D/g, '');
+    if (digitsOnly.length < 10) return false;
+    const re = /^\+?[\d\s\-()]{10,}$/;
+    return re.test(phone);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // min 8 symb, 1 letter and 1 numb
+    return re.test(password);
+  };
+
   const handleRegister = async () => {
     if (!firstName || !lastName || !phone || !email || !password) {
       Alert.alert('Error', 'Fill every field!');
       return;
     }
-
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Invalid email address');
+      return;
+    }
+    if (!validatePhone(phone)) {
+      Alert.alert('Error', 'Invalid phone number');
+      return;
+    }
+    if (!validatePassword(password)) {
+      Alert.alert(
+        'Error',
+        'Password must contain at least 8 symbols, including 1 letter and 1 number'
+      );
+      return;
+    }
     setLoading(true);
     try {
       const result = await onRegister!(firstName, lastName, phone, email, password);
@@ -77,6 +108,9 @@ const RegisterScreen = ({ navigation }: any) => {
         onChangeText={setPassword}
         secureTextEntry
       />
+      <Text style={styles.passwordHint}>
+        Password must contain at least 8 symbols, including 1 letter and 1 number
+      </Text>
 
       <TouchableOpacity 
         style={styles.button} 
@@ -96,6 +130,11 @@ const RegisterScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
+  passwordHint: {
+    color: '#d0d0d0',
+    fontSize: 12,
+    marginBottom: 15
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

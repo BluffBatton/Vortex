@@ -11,7 +11,7 @@ export default function LiqPayScreen() {
   const navigation = useNavigation<any>();
   const { amount, fuel_type, liters } = route.params;
   const [html, setHtml] = useState<string|null>(null);
-      const GLOBAL_API_URL = 'https://gregarious-happiness-production.up.railway.app';
+  const GLOBAL_API_URL = 'https://gregarious-happiness-production.up.railway.app';
 
   useEffect(() => {
     fetch(
@@ -56,23 +56,20 @@ export default function LiqPayScreen() {
       originWhitelist={['*']}
       source={{ html }}
       onNavigationStateChange={navState => {
-    const url = navState.url;
-
-    if (url.startsWith(`${GLOBAL_API_URL}/api/liqpay/result`)) {
-      navigation.reset({
-        index: 0,
-        routes: [
-          { name: 'Main' },
-          { name: 'Wallet' }
-        ],
-      });
-    }
-  }}
-  mixedContentMode="always"
-/>
+        const url = navState.url;
+        if (url.startsWith(`${GLOBAL_API_URL}/api/liqpay/result`)) {
+          navigation.navigate('Main', { screen: 'Wallet' });
+        }
+      }}
+      mixedContentMode="always"
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex:1, justifyContent:'center', alignItems:'center' },
+  center: { 
+    flex:1, 
+    justifyContent:'center', 
+    alignItems:'center' 
+  },
 });
