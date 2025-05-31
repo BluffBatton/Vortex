@@ -1,0 +1,9 @@
+.profile-main {
+	display: flex;
+	gap: 20px;
+	padding: 40px;
+	font-family: sans-serif;
+	align-items: stretch;
+	justify-content: center;
+	height: 650px;
+}

@@ -1,0 +1,151 @@
+.adminprice-main {
+	display: flex;
+	height: 100vh;
+	font-family: Arial, sans-serif;
+}
+
+.adminprice-content {
+	width: 950px;
+	padding: 36px 20px 30px 40px;
+	background-color: #f5f5f5;
+}
+
+.adminprice-title {
+	font-size: 24px;
+	margin-bottom: 45px;
+	color: #0d4c49;
+}
+
+.adminprice-divider {
+	border: none;
+	height: 1px;
+	background-color: #ccc;
+	margin: 10px 0;
+}
+
+.adminprice-station-block {
+	background-color: rgba(245, 245, 245, 0.7);
+	padding: 20px;
+	border-radius: 8px;
+}
+
+.adminprice-station-group {
+	margin-bottom: 15px;
+}
+
+.adminprice-station-label {
+	display: block;
+	margin-bottom: 5px;
+	color: #0d4c49;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.adminprice-station-input {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	background-color: white;
+}
+
+.adminprice-station-input:focus {
+	outline: none;
+	border-color: #0d4c49;
+}
+
+.adminprice-table-block {
+	padding: 20px;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+.adminprice-table-title {
+	font-size: 18px;
+	color: #0d4c49;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.adminprice-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.adminprice-table-header-row {
+	background-color: #0d4c49;
+}
+
+.adminprice-table-header-cell {
+	padding: 12px 15px;
+	text-align: left;
+	color: white;
+	font-weight: bold;
+	border-right: 1px solid #ddd;
+}
+
+.adminprice-table-header-cell:last-child {
+	border-right: none;
+}
+
+.adminprice-table-row {
+	background-color: white;
+}
+
+.adminprice-table-row:nth-child(even) {
+	background-color: #f9f9f9;
+}
+
+.adminprice-table-cell {
+	padding: 12px 15px;
+	text-align: left;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+.adminprice-table-cell:last-child {
+	border-right: none;
+}
+
+.adminprice-table-row:last-child .adminprice-table-cell {
+	border-bottom: none;
+}
+
+.adminprice-price-input {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.adminprice-price-input:focus {
+	outline: none;
+	border-color: #0d4c49;
+}
+
+.adminprice-save-wrapper {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+
+.adminprice-save-button {
+	padding: 10px 25px;
+	background-color: #0d4c49;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.adminprice-save-button:hover {
+	background-color: #0b3d3a;
+}

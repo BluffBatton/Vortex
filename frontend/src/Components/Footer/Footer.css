@@ -1,0 +1,141 @@
+.footer {
+	background-color: #14514e;
+	color: #fff;
+	display: flex;
+	justify-content: space-between;
+	padding: 40px 60px 0 60px;
+	flex-wrap: wrap;
+	gap: 40px;
+	font-family: sans-serif;
+}
+
+.footer__column {
+	flex: 1;
+	min-width: 220px;
+}
+
+.footer__left {
+	flex: 0 1 300px;
+	min-width: 500px;
+}
+
+.footer__left h3 {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.footer__contact-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	min-height: 200px;
+}
+
+.footer__contact-list li {
+	margin: 25px 0;
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+}
+
+.footer__contact-list img {
+	width: 18px;
+	margin-right: 10px;
+}
+
+.footer__center {
+	text-align: center;
+}
+
+.footer__logo {
+	width: 100px;
+	height: auto;
+	margin-bottom: 8px;
+}
+
+.footer__name {
+	font-size: 18px;
+	font-weight: 600;
+	margin-bottom: 44px;
+}
+
+.footer__socials {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+}
+
+.footer__socials img {
+	width: 24px;
+	height: 24px;
+	transition: opacity 0.3s ease; /* Плавное изменение прозрачности */
+}
+
+.footer__socials img:hover {
+	opacity: 0.5; /* Уровень прозрачности при наведении (можно изменить на любое значение от 0 до 1) */
+}
+
+.footer__right .footer__brand {
+	font-weight: bold;
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+
+.footer__nav {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	min-height: 200px;
+}
+
+.footer__nav li {
+	margin-bottom: 10px;
+	transition: background-color 0.3s ease;
+	border-radius: 3px;
+	padding: 1px 0;
+}
+
+.footer__nav li:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.footer__nav a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 14px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 4px 0;
+}
+
+.footer__nav a span {
+	font-size: 14px;
+	color: #ccc;
+	transition: transform 0.3s ease;
+}
+
+.footer__nav li:hover a span {
+	transform: translateX(3px);
+}
+
+.footer__nav li:hover a {
+	color: #f5f5f5;
+}
+
+.footer__logo-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	text-decoration: none;
+	color: inherit;
+}
+
+.footer__logo-link:hover .footer__logo {
+	opacity: 0.8;
+}
+
+.footer__logo-link:hover .footer__name {
+	color: #007a74;
+}

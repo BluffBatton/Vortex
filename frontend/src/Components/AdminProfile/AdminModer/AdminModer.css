@@ -1,0 +1,161 @@
+.adminmoder-main {
+	display: flex;
+	height: 100vh;
+	font-family: Arial, sans-serif;
+}
+
+.adminmoder-content {
+	width: 950px;
+	padding: 36px 20px 30px 40px;
+	background-color: #f5f5f5;
+}
+
+.adminmoder-title {
+	font-size: 24px;
+	margin-bottom: 45px;
+	color: #0d4c49;
+}
+
+.adminmoder-divider {
+	border: none;
+	height: 1px;
+	background-color: #ccc;
+	margin: 10px 0;
+}
+
+.adminmoder-container {
+	display: flex;
+	gap: 20px;
+}
+
+.adminmoder-form-block {
+	flex: 1;
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.adminmoder-list-block {
+	flex: 1;
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.adminmoder-subtitle {
+	font-size: 18px;
+	color: #0d4c49;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+
+.adminmoder-form-group {
+	margin-bottom: 15px;
+}
+
+.adminmoder-label {
+	display: block;
+	margin-bottom: 5px;
+	color: #0d4c49;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.adminmoder-input,
+.adminmoder-select {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.adminmoder-input:focus,
+.adminmoder-select:focus {
+	outline: none;
+	border-color: #0d4c49;
+}
+
+.adminmoder-save-button {
+	width: 100%;
+	padding: 10px;
+	background-color: #0d4c49;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-top: 10px;
+}
+
+.adminmoder-save-button:hover {
+	background-color: #0b3d3a;
+}
+
+.adminmoder-list-container {
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.adminmoder-list-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 15px;
+	border-bottom: 1px solid #eee;
+}
+
+.adminmoder-list-item:last-child {
+	border-bottom: none;
+}
+
+.adminmoder-list-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.adminmoder-list-name {
+	font-weight: bold;
+	color: #333;
+}
+
+.adminmoder-list-email {
+	font-size: 13px;
+	color: #666;
+}
+
+.adminmoder-list-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.adminmoder-edit-button,
+.adminmoder-delete-button {
+	padding: 5px 10px;
+	border: none;
+	border-radius: 4px;
+	font-size: 13px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.adminmoder-edit-button {
+	background-color: #0d4c49;
+	color: white;
+}
+
+.adminmoder-edit-button:hover {
+	background-color: #0b3d3a;
+}
+
+.adminmoder-delete-button {
+	background-color: #d9534f;
+	color: white;
+}
+
+.adminmoder-delete-button:hover {
+	background-color: #c9302c;
+}

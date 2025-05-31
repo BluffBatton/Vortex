@@ -1,0 +1,126 @@
+.login-main {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 600px;
+	background-color: #f5f5f5;
+	margin: 20px 20px;
+	padding-right: 100px;
+	box-sizing: border-box;
+}
+
+.login-box {
+	background: linear-gradient(to bottom, #ffffff, #0d4c49);
+	padding: 40px 70px;
+	border-radius: 16px;
+	width: 400px;
+	height: 400px;
+	text-align: center;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-title {
+	font-size: 24px;
+	color: #0d4c49;
+	margin-bottom: 30px;
+	font-weight: 600;
+}
+
+.login-button {
+	background-color: white;
+	color: #0d4c49;
+	border: none;
+	border-radius: 6px;
+	padding: 12px 16px;
+	margin-bottom: 16px;
+	width: 80%;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+	background-color: #357974;
+}
+
+.login-input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+	max-width: 300px;
+	font-family: Arial, sans-serif;
+	margin-bottom: 20px;
+}
+
+.login-input-label {
+	font-size: 14px;
+	color: #0d4c49;
+	margin-bottom: 2px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.login-input-field {
+	padding: 12px 16px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	background: white;
+	transition: all 0.3s ease;
+}
+
+.login-input-field::placeholder {
+	color: rgba(0, 0, 0, 0.3);
+}
+
+.login-input-field:focus {
+	outline: none;
+	border-color: #0066cc;
+	box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.login-input-group-pass {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+	max-width: 300px;
+	font-family: Arial, sans-serif;
+	margin-bottom: 70px;
+}
+
+.login-input-label-pass {
+	font-size: 14px;
+	color: #0d4c49;
+	margin-bottom: 2px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.login-input-field-pass {
+	padding: 12px 16px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	background: white;
+	transition: all 0.3s ease;
+}
+
+.login-input-field-pass::placeholder {
+	color: rgba(0, 0, 0, 0.3);
+}
+
+.login-input-field-pass:focus {
+	outline: none;
+	border-color: #0066cc;
+	box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}

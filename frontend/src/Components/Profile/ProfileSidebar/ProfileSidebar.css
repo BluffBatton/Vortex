@@ -1,0 +1,86 @@
+.acchistory-sidebar {
+	width: 350px;
+	background-color: #302c2c;
+	color: white;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.acchistory-profile {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 20px;
+	justify-content: center;
+}
+.acchistory-avatar-img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	filter: brightness(0) invert(1);
+}
+.acchistory-username {
+	font-weight: bold;
+}
+.acchistory-nav {
+	flex-grow: 1;
+}
+.acchistory-nav ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.acchistory-nav li {
+	margin: 0;
+	width: 100%;
+}
+.acchistory-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 15px 20px;
+	cursor: pointer;
+	background-color: #3a3a3a;
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 5px;
+}
+.acchistory-nav li:last-child .acchistory-nav-item {
+	margin-bottom: 0;
+}
+.acchistory-nav-item:hover {
+	background-color: #4c4c4c;
+}
+.acchistory-nav-icon {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+	filter: brightness(0) invert(1);
+}
+.acchistory-active .acchistory-nav-item {
+	background-color: #2f6b68;
+	color: white;
+}
+.acchistory-logout {
+	background: none;
+	border: none;
+	color: #ff4c4c;
+	cursor: pointer;
+	text-align: center;
+	margin: 20px 0;
+	align-self: center;
+	padding: 0;
+}
+.acchistory-logout-content {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	color: #ff4c4c;
+}
+.acchistory-logout-icon {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+}

@@ -1,0 +1,159 @@
+.header {
+	background-color: #fff;
+	border-bottom: 2px solid #1c6e6a40;
+	padding: 8px 0;
+}
+
+.header__nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 0 20px;
+}
+
+/* Общие стили для всех flex-элементов */
+.header__menu,
+.header__logo-block,
+.header__auth {
+	flex: 1; /* Равномерное распределение пространства */
+	display: flex;
+	justify-content: center; /* Центрируем содержимое каждого блока */
+}
+
+/* Стили для меню */
+.header__menu {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0 40px; /* Отступы от краев */
+	justify-content: space-between; /* Равномерное распределение */
+	width: 100%; /* Занимает всю доступную ширину */
+}
+
+.header__menu li {
+	flex: 1;
+	text-align: center;
+	position: relative;
+	height: 100%; /* Растягиваем на всю высоту хедера */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease; /* Плавное изменение фона */
+}
+
+.header__menu li:hover {
+	background-color: white; /* Белый фон при наведении */
+}
+
+.header__menu li:hover .header__link {
+	color: rgb(65, 158, 165); /* Черный текст при наведении (если нужно) */
+	/* Или оставить исходный цвет: color: #0d4c49; */
+}
+
+.header__menu li:first-child {
+	text-align: center; /* Первый элемент прижимаем влево */
+}
+
+.header__menu li:last-child {
+	text-align: center; /* Последний элемент прижимаем вправо */
+}
+
+/* Авторизация - крайний правый элемент */
+.header__auth {
+	justify-content: flex-end;
+	gap: 10px;
+	flex-shrink: 0;
+	max-width: 120px;
+}
+
+/* Остальные стили остаются без изменений */
+.header__link {
+	text-decoration: none;
+	color: #0d4c49;
+	font-weight: 600;
+	font-size: 22px;
+	transition: color 0.3s ease;
+}
+
+.header__logo-block {
+	flex-shrink: 0;
+	max-width: 120px;
+}
+
+.header__logo-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	text-decoration: none;
+	color: inherit;
+}
+
+.header__logo {
+	width: 60px;
+	height: auto;
+}
+
+.header__name {
+	font-size: 20px;
+	font-weight: 600;
+	color: #0d4c49;
+}
+
+/* Опционально: hover-эффекты */
+.header__logo-link:hover .header__logo {
+	opacity: 0.8;
+}
+
+.header__logo-link:hover .header__name {
+	color: #007a74;
+}
+
+.header__user-icon {
+	width: 28px;
+	height: 28px;
+}
+
+.header__signin {
+	text-decoration: none;
+	color: #0d4c49;
+	font-size: 16px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	white-space: nowrap; /* Добавляем это свойство */
+}
+
+.header__auth {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 0 15px;
+	height: 100%;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+/* Эффект при наведении на весь блок */
+.header__auth:hover {
+	background-color: rgba(65, 158, 165, 0.2);
+}
+
+/* Изменение цвета иконки при наведении */
+.header__auth:hover .header__user-icon {
+	filter: invert(56%) sepia(43%) saturate(435%) hue-rotate(130deg)
+		brightness(89%) contrast(87%);
+}
+
+/* Изменение цвета текста при наведении */
+.header__auth:hover .header__signin {
+	color: rgb(65, 158, 165);
+	font-weight: 600;
+	/* Добавляем минимальную ширину, равную исходной ширине текста */
+	min-width: calc(16px * 3.5); /* Примерный расчет (font-size * кол-во букв) */
+}

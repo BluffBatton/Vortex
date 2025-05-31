@@ -1,0 +1,163 @@
+.fuel-main {
+	padding: 60px 180px;
+	text-align: center;
+}
+
+.fuel-title {
+	font-size: 82px;
+	color: #0b2525;
+	margin-bottom: 40px;
+	text-align: left;
+}
+
+.fuel-description {
+	font-size: 32px;
+	color: #0b3f3c;
+	max-width: 1000px;
+	text-align: left;
+	margin-bottom: 110px;
+}
+
+.fuel-cards {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 85px;
+}
+
+.fuel-card {
+	background-color: #fff;
+	border-radius: 12px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	text-decoration: none;
+	color: #0d4c49;
+	width: 240px;
+	padding: 20px 10px;
+	transition: transform 0.2s ease;
+	margin-bottom: 50px;
+}
+
+.fuel-card:hover {
+	transform: translateY(-5px);
+}
+
+.fuel-type {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	color: #0b2525;
+}
+
+.fuel-name {
+	font-size: 16px;
+	color: #0b3f3c;
+	margin-bottom: 10px;
+}
+
+.fuel-price {
+	font-size: 20px;
+	font-weight: 600;
+	color: #0b2525;
+}
+
+.fuel-modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+}
+
+.fuel-modal__content {
+	background-color: #fff;
+	border-radius: 12px;
+	padding: 40px;
+	max-width: 800px;
+	width: 90%;
+	max-height: 80vh;
+	overflow-y: auto;
+	position: relative;
+}
+
+.fuel-modal__close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	font-size: 28px;
+	font-weight: bold;
+	color: #0d4c49;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.fuel-modal h2 {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 25px;
+}
+
+.fuel-highlight {
+	color: #0b2525;
+	font-size: 32px;
+}
+
+.fuel-modal-icon {
+	width: 100px;
+	height: 100px;
+	object-fit: contain;
+}
+
+.fuel-modal__body {
+	color: #0b3f3c;
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+.fuel-modal__body h3 {
+	margin: 20px 0 10px;
+	color: #0b2525;
+	font-size: 20px;
+}
+
+.fuel-modal__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 30px;
+	margin-bottom: 25px;
+}
+
+.fuel-modal__title {
+	flex: 1;
+}
+
+.fuel-modal__tech-info {
+	font-size: 18px;
+	color: #0b3f3c;
+	margin-top: 5px;
+}
+
+.fuel-modal-icon {
+	width: 120px;
+	height: auto;
+	object-fit: contain;
+}
+
+.fuel-modal h2 {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 0;
+}
+
+.fuel-highlight {
+	color: #0b2525;
+	font-size: 32px;
+}

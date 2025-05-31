@@ -1,0 +1,130 @@
+.network__app {
+	padding: 40px 20px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.network__app-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 50px;
+	flex-wrap: wrap;
+}
+
+.network__app-image img {
+	max-width: 280px;
+	height: auto;
+}
+
+.network__app-content {
+	max-width: 500px;
+	text-align: left;
+}
+
+.network__section-title {
+	font-size: 32px;
+	margin-bottom: 10px;
+	font-family: 'Comic Sans MS', sans-serif;
+	color: #000;
+}
+
+.network__app-description {
+	font-size: 18px;
+	margin-bottom: 25px;
+	color: #0d4c49;
+	line-height: 1.5;
+	font-family: 'Comic Sans MS', sans-serif;
+}
+
+.network__app-features {
+	list-style: none;
+	padding: 0;
+	margin-bottom: 30px;
+}
+
+.network__app-feature {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	color: #0d4c49;
+	margin-bottom: 20px;
+	font-size: 17px;
+	line-height: 1.4;
+	font-family: 'Comic Sans MS', sans-serif;
+}
+
+.network__app-feature img {
+	width: 24px;
+	height: 24px;
+	margin-top: 3px;
+}
+
+.network__app-button {
+	display: inline-block;
+	padding: 10px 20px;
+	border: 2px solid #0d4c49;
+	color: #0d4c49;
+	text-decoration: none;
+	border-radius: 6px;
+	font-size: 16px;
+	transition: 0.3s ease;
+	font-family: 'Comic Sans MS', sans-serif;
+}
+
+.network__app-button:hover {
+	background-color: #0d4c49;
+	color: white;
+}
+
+.map-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px 20px;
+	width: 105.75%;
+}
+
+.map-container iframe {
+	width: 100%;
+	max-width: 1000px;
+	height: 500px;
+	border: 0;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.network-map {
+	text-align: center;
+	margin-top: 40px;
+	margin-bottom: 20px;
+}
+
+.network-map__title {
+	font-size: 28px;
+	font-weight: 700;
+	margin-bottom: 16px;
+}
+
+.network-map__nav {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+}
+
+.network-map__link {
+	font-size: 18px;
+	color: #2d5d5b;
+	text-decoration: none;
+	position: relative;
+	font-weight: 500;
+}
+
+.network-map__link--active {
+	text-decoration: underline;
+}
+
+.map_main {
+	padding-right: 100px;
+	box-sizing: border-box;
+}
