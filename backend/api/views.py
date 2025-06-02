@@ -147,6 +147,23 @@ class GasStationViewSet(viewsets.ModelViewSet):
     serializer_class = GasStationSerializer
     #permission_classes = [IsAdminUser] 
     permission_classes = [AllowAny]
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated],
+        url_path='my-stations'
+    )
+
+    def my_stations(self, request):
+        user = request.user
+        qs = GasStation.objects.filter(moderator=user)
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
