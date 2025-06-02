@@ -60,7 +60,7 @@ const WalletScreen = () => {
     { label: '95', amount: walletData.amount95, color: '#3DBB65' },
     { label: '100', amount: walletData.amount100, color: '#F1D91A' },
     { label: 'GAS', amount: walletData.amountGas, color: '#E44DC3' },
-    { label: 'DIESEL', amount: walletData.amountDiesel, color: '#8D8D8D' },
+    { label: 'DIESEL', amount: walletData.amountDiesel, color: '#DD3B3B' },
   ];
 
 return (

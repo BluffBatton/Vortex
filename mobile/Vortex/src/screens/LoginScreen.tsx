@@ -22,9 +22,6 @@ const LoginScreen = ({ navigation }: any) => {
       if (result?.error) {
         Alert.alert('Login error', result.message);
       } 
-      // else {
-      //   navigation.replace('Main')
-      // }
       } catch (error) {
         Alert.alert('Error', 'Unable to log in: ' + error);
       } finally {
@@ -39,9 +36,7 @@ const LoginScreen = ({ navigation }: any) => {
       if (result?.error) {
         Alert.alert('Google Login Error', result.message);
       } 
-      // else {
-      //   navigation.replace('Main');
-      // }
+
       } catch {
         Alert.alert('Error', 'Google login failed');
       } finally {

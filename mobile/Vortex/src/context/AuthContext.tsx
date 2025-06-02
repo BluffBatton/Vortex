@@ -6,10 +6,6 @@ import { AxiosError } from "axios";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as SecureStore from "expo-secure-store";
 
-// axios.interceptors.request.use(req => {
-//   console.log('[axios req]', req.method?.toUpperCase(), req.url, req.data);
-//   return req;
-// });
 
 interface AuthState {
   token: string | null;
@@ -17,11 +13,6 @@ interface AuthState {
   authenticated: boolean | null;
 }
 
-// const [authState, setAuthState] = useState<AuthState>({ 
-//   token: null, 
-//   refreshToken: null, 
-//   authenticated: null 
-// });
 
 interface AuthProps{
     authState?: { token: string | null; authenticated: boolean | null };
@@ -46,7 +37,6 @@ export const AuthProvider = ({ children }: any) => {
     }>({ token: null, refreshToken: null, authenticated: null, })
 
       axios.interceptors.request.use(req => {
-    // console.log("[axios req]", req.method?.toUpperCase(), req.url, req.data);
     return req;
   });
 
@@ -114,7 +104,6 @@ export const AuthProvider = ({ children }: any) => {
                 first_name, last_name, phone_number, email, password
             });
         } catch (e) {
-            //return {error: true, message: (e as any).response.data.message}; nemec
             const error = e as AxiosError;
             return { error: true, message: (error.response?.data as any)?.message || error.message
             }
@@ -131,7 +120,6 @@ export const AuthProvider = ({ children }: any) => {
             await SecureStore.setItemAsync(TOKEN_KEY, result.data.access); // result.data.token or access?
             await SecureStore.setItemAsync(REFRESH_TOKEN, result.data.refresh);
 
-            //console.log("roketa ~ file: AuthContext.tsx:40 ~ login ~ result:", result)
 
             setAuthState({ token: result.data.access, refreshToken: result.data.refresh, authenticated: true });
 
@@ -150,7 +138,6 @@ export const AuthProvider = ({ children }: any) => {
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           await GoogleSignin.signIn();
           const { idToken } = await GoogleSignin.getTokens();
-          // console.log('idToken: ' + idToken)
           const { data } = await axios.post(`${API_URL}/api/auth/google/`, { idToken });
           if (!data.access) throw new Error('No access token');
           await SecureStore.setItemAsync(TOKEN_KEY, data.access);
