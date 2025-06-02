@@ -45,6 +45,16 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+class CurrentUserRolesOnlyView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "is_staff":     user.is_staff,
+            "is_superuser": user.is_superuser,
+        })
+
 class GoogleLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
