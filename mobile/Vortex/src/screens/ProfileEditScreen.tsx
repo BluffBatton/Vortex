@@ -50,7 +50,7 @@ const handleSave = () => {
     });
     return;
   }
-
+//email valid
   if (!validateEmail(email)) {
     Toast.show({
       type: 'error',
