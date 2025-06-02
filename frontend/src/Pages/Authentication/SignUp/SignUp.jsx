@@ -1,26 +1,87 @@
 import React, { useState } from 'react'
 import './SignUp.css'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { API_BASE_URL } from '../../../api.js'
 
 const SignUp = () => {
 	const [firstName, setFirstName] = useState('')
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [phone, setPhone] = useState('')
-	const [dob, setDob] = useState('')
 	const [password, setPassword] = useState('')
+	const [error, setError] = useState('')
+	const navigate = useNavigate()
 
-	const handleSignUp = () => {
-		console.log('Signing up with:', {
-			firstName,
-			lastName,
-			email,
-			phone,
-			dob,
-			password,
-		})
-		// api sign up
-		alert(`Sign Up (mock): ${firstName} ${lastName}`)
+	const handleSignUp = async () => {
+		setError('')
+
+		try {
+			const registerResponse = await fetch(
+				`${API_BASE_URL}/api/user/register/`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						first_name: firstName,
+						last_name: lastName,
+						email,
+						phone_number: phone,
+						password,
+					}),
+				}
+			)
+
+			if (!registerResponse.ok) {
+				const errorData = await registerResponse.json()
+				setError(errorData?.detail || 'Ошибка регистрации')
+				return
+			}
+
+			const loginResponse = await fetch(`${API_BASE_URL}/api/token/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email, password }),
+			})
+
+			const loginData = await loginResponse.json()
+
+			if (!loginResponse.ok) {
+				setError('Регистрация прошла, но не удалось войти')
+				return
+			}
+
+			localStorage.setItem('access', loginData.access)
+			localStorage.setItem('refresh', loginData.refresh)
+
+			const rolesResponse = await fetch(`${API_BASE_URL}/api/user/roles/`, {
+				method: 'GET',
+				headers: {
+					Authorization: `Bearer ${loginData.access}`,
+				},
+			})
+
+			const roles = await rolesResponse.json()
+
+			if (!rolesResponse.ok) {
+				setError('Не удалось получить роли после регистрации')
+				return
+			}
+
+			if (roles.is_superuser) {
+				navigate('/Administrator')
+			} else if (roles.is_staff) {
+				navigate('/ModeratorPage')
+			} else {
+				navigate('/Profile')
+			}
+		} catch (err) {
+			console.error('Sign-up error:', err)
+			setError('Ошибка регистрации. Попробуйте позже.')
+		}
 	}
 
 	return (
@@ -29,6 +90,8 @@ const SignUp = () => {
 				<div className='signup-title-wrapper'>
 					<h1 className='signup-title'>Sign up</h1>
 				</div>
+
+				{error && <p className='signup-error'>{error}</p>}
 
 				<div className='signup-form-body'>
 					<div className='signup-double-row'>
@@ -73,17 +136,6 @@ const SignUp = () => {
 							placeholder='+380112223344'
 							value={phone}
 							onChange={e => setPhone(e.target.value)}
-						/>
-					</div>
-
-					<div className='signup-input-group'>
-						<p className='signup-input-label'>Date of birthday</p>
-						<input
-							type='text'
-							className='signup-input-field'
-							placeholder='01.01.2001'
-							value={dob}
-							onChange={e => setDob(e.target.value)}
 						/>
 					</div>
 

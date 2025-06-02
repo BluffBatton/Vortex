@@ -3,7 +3,7 @@ from django.urls import path, include
 from api.views import (CreateUserView, EmailTokenObtainPairView, GoogleLoginView, UserProfileView, 
                        UserWalletView, GasStationViewSet, FuelTransactionViewSet, ValidatePromoView,
                          GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView, LiqPayCallbackView, 
-                         LiqPayResultView, UserAchievementsView)
+                         LiqPayResultView, UserAchievementsView, CurrentUserRolesOnlyView)
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from django.http import JsonResponse
@@ -30,9 +30,10 @@ urlpatterns = [
     path('api/user/profile/', UserProfileView.as_view(), name='user_profile'),
 
     path('api/user/wallet/', UserWalletView.as_view(), name='user_wallet'),
+
+    path('api/user/roles/', CurrentUserRolesOnlyView.as_view(), name='current_user_roles'),
     
     path('api/', include(router.urls)),
-    #path('api/gas-stations/', GasStationsView.as_view(), name='')
     
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     
