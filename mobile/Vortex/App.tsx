@@ -5,9 +5,8 @@ import { AuthProvider } from './src/context/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Toast from 'react-native-toast-message';
 
-
-//GOOGLE_CLIENT_ID = '24222004042-fjptt11kvs51bii54iho5t6802quldv9.apps.googleusercontent.com'
 export default function App() {
     useEffect(() => {
       GoogleSignin.configure({
@@ -25,6 +24,7 @@ export default function App() {
         <NavigationContainer>
           <RootNavigator />
         </NavigationContainer>
+        <Toast />
           </AuthProvider>
       </SafeAreaProvider>
   );

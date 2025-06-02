@@ -1,10 +1,12 @@
 // src/screens/ProfileEditScreen.tsx
+import { validateEmail, validatePhone, validatePassword } from '../utils/validation';
 import React, { useState, useEffect } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, ScrollView } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useAuth, API_URL } from '../context/AuthContext'
+import Toast from 'react-native-toast-message'
 
 export default function ProfileEditScreen() {
   const { authState } = useAuth()
@@ -39,32 +41,76 @@ export default function ProfileEditScreen() {
   }, [authState])
 
 const handleSave = () => {
+  if (!firstName || !lastName || !phoneNumber || !email) {
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: 'Please fill in all required fields!',
+      position: 'bottom',
+    });
+    return;
+  }
+//email valid
+  if (!validateEmail(email)) {
+    Toast.show({
+      type: 'error',
+      text1: 'Invalid Email',
+      text2: 'Please enter a valid email address.',
+      position: 'bottom',
+    });
+    return;
+  }
+
+  if (!validatePhone(phoneNumber)) {
+    Toast.show({
+      type: 'error',
+      text1: 'Invalid Phone',
+      text2: 'Phone must be in format +380XXXXXXXXX',
+      position: 'bottom',
+    });
+    return;
+  }
+
+  if (password.trim().length > 0 && !validatePassword(password)) {
+    Toast.show({
+      type: 'error',
+      text1: 'Weak Password',
+      text2: 'Password must have at least 8 chars, including a letter and a number.',
+      position: 'bottom',
+    });
+    return;
+  }
+
   const payload: any = {
     first_name: firstName,
     last_name: lastName,
     phone_number: phoneNumber,
     email,
-  }
+  };
   if (password.trim().length) {
-    payload.password = password
+    payload.password = password;
   }
 
-  setSaving(true)
+  setSaving(true);
   axios
     .patch(`${API_URL}/api/user/profile/`, payload, {
       headers: { Authorization: `Bearer ${authState?.token}` },
     })
     .then(() => {
-      Alert.alert('Success', 'Data has been saved')
-      navigation.goBack()
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Data has been saved',
+        position: 'bottom',
+      });
+      navigation.goBack();
     })
     .catch(err => {
-      console.error(err)
-      Alert.alert('Error', 'Unable to save changes')
+      console.error(err);
+      Alert.alert('Error', 'Unable to save changes');
     })
-    .finally(() => setSaving(false))
-}
-
+    .finally(() => setSaving(false));
+};
 
   if (loading) {
     return (
