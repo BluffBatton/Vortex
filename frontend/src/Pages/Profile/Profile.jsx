@@ -8,20 +8,20 @@ import AccountSettings from '../../Components/Profile/AccountSettings/AccountSet
 import UserStatistics from '../../Components/Profile/UserStatistics/UserStatistics'
 
 const Profile = () => {
-	const [activeTab, setActiveTab] = useState('purchase')
+	const [activeTab, setActiveTab] = useState('settings')
 
 	const renderContent = () => {
 		switch (activeTab) {
+			case 'settings':
+				return <AccountSettings />
 			case 'purchase':
 				return <PurchaseHistory />
 			case 'statistics':
 				return <UserStatistics />
-			case 'settings':
-				return <AccountSettings />
 			case 'complaints':
 				return <Complaints />
 			default:
-				return <PurchaseHistory />
+				return <AccountSettings />
 		}
 	}
 

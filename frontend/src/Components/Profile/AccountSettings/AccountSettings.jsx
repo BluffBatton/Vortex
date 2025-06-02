@@ -1,23 +1,80 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './AccountSettings.css'
+import { API_BASE_URL } from '../../../api.js'
 
 const AccountSettings = () => {
-	const [firstName, setFirstName] = useState('Jonis')
-	const [lastName, setLastName] = useState('Barabulka')
-	const [phone, setPhone] = useState('+380000000000')
-	const [email, setEmail] = useState('test@gmail.com')
-	const [password, setPassword] = useState('qwerty12345')
+	const [firstName, setFirstName] = useState('')
+	const [lastName, setLastName] = useState('')
+	const [phone, setPhone] = useState('')
+	const [email, setEmail] = useState('')
+	const [password, setPassword] = useState('')
+	const [loading, setLoading] = useState(true)
 
-	const handleSave = () => {
-		console.log('Saving changes...')
-		console.log({
-			firstName,
-			lastName,
-			phone,
-			email,
-			password,
-		})
-		// placeholder api save
+	useEffect(() => {
+		const fetchUser = async () => {
+			const token = localStorage.getItem('access')
+			if (!token) return
+
+			try {
+				const response = await fetch(`${API_BASE_URL}/api/user/profile/`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+
+				if (response.ok) {
+					const data = await response.json()
+					setFirstName(data.first_name || '')
+					setLastName(data.last_name || '')
+					setPhone(data.phone_number || '')
+					setEmail(data.email || '')
+				}
+			} catch (err) {
+				console.error('Ошибка при получении данных профиля', err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchUser()
+	}, [])
+
+	const handleSave = async () => {
+		const token = localStorage.getItem('access')
+		if (!token) return
+
+		const updateData = {
+			first_name: firstName,
+			last_name: lastName,
+			phone_number: phone,
+			email: email,
+		}
+
+		if (password.trim()) {
+			updateData.password = password
+		}
+
+		try {
+			const response = await fetch(`${API_BASE_URL}/api/user/profile/`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(updateData),
+			})
+
+			if (response.ok) {
+				setPassword('')
+				window.location.reload()
+			}
+		} catch (err) {
+			console.error('Ошибка при сохранении изменений', err)
+		}
+	}
+
+	if (loading) {
+		return <p className='accsettings-loading'>Loading...</p>
 	}
 
 	return (
@@ -63,12 +120,14 @@ const AccountSettings = () => {
 				<label>
 					<span className='accsettings-label-text'>Password</span>
 					<input
-						type='text'
+						type='password'
 						className='accsettings-input-field'
 						value={password}
 						onChange={e => setPassword(e.target.value)}
+						placeholder='Enter new password to change it'
 					/>
 				</label>
+
 				<button type='button' className='accsettings-save' onClick={handleSave}>
 					Save changes
 				</button>
