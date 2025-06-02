@@ -36,13 +36,13 @@ const AppContent = () => {
 			<ScrollToTop />
 			{!hideHeaderFooter && <Header />}
 			<Routes>
-				<Route path='/Main' element={<Main />} />
+				<Route path='/' element={<Main />} />
 				<Route path='/AboutUs' element={<AboutUs />} />
 				<Route path='/Cafe' element={<Cafe />} />
 				<Route path='/Fuel' element={<Fuel />} />
 				<Route path='/Map' element={<Map />} />
 				<Route path='/List' element={<List />} />
-				<Route path='/' element={<Authorization />} />
+				<Route path='/Authorization' element={<Authorization />} />
 				<Route path='/LogIn' element={<LogIn />} />
 				<Route path='/SignUp' element={<SignUp />} />
 				<Route path='/Profile' element={<Profile />} />
