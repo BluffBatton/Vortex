@@ -19,9 +19,7 @@ const RegisterScreen = ({ navigation }: any) => {
   };
 
   const validatePhone = (phone: string): boolean => {
-    const digitsOnly = phone.replace(/\D/g, '');
-    if (digitsOnly.length < 10) return false;
-    const re = /^\+?[\d\s\-()]{10,}$/;
+    const re = /^\+380\d{9}$/;
     return re.test(phone);
   };
 
@@ -91,7 +89,7 @@ const RegisterScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Vortex</Text>
-      <Text style={styles.title}>Enroll</Text>
+      <Text style={styles.title}>Sign Up</Text>
 
       <TextInput
         style={styles.input}
@@ -165,9 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#135452'
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
     color: 'white'
   },

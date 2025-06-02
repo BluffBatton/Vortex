@@ -65,7 +65,6 @@ export default function PurchaseFuelScreen() {
   }, [promo, authState?.token]);
 
     useEffect(() => {
-    // невеликая задержка перед проверкой, чтобы не спамить сервер
     const t = setTimeout(validatePromo, 500);
     return () => clearTimeout(t);
   }, [promo, validatePromo]);
