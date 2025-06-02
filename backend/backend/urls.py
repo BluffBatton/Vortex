@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/user/wallet/', UserWalletView.as_view(), name='user_wallet'),
     
     path('api/', include(router.urls)),
+    #path('api/gas-stations/', GasStationsView.as_view(), name='')
     
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     
