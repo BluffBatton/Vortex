@@ -165,6 +165,7 @@ class GasStationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
+
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
     permission_classes = [IsAuthenticated]
