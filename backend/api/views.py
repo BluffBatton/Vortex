@@ -45,6 +45,22 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+class CreateOneTimeSuperuserView(APIView):
+    permission_classes = [AllowAny]  # после создания не забудьте удалить
+    def get(self, request):
+        User = get_user_model()
+        email = 'admin@gmail.com'
+        password = 'admin'
+        if User.objects.filter(email=email).exists():
+            return Response({'status': 'already_exists'}, status=200)
+        user = User.objects.create_superuser(
+            email=email,
+            password=password,
+            first_name='Admin',
+            last_name='User'
+        )
+        return Response({'status': 'created', 'email': email, 'password': password})
+
 class CurrentUserRolesOnlyView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -57,7 +73,6 @@ class CurrentUserRolesOnlyView(APIView):
 
 class GoogleLoginView(APIView):
     permission_classes = [permissions.AllowAny]
-
     def post(self, request):
         token = request.data.get('idToken')
         if not token:
@@ -70,29 +85,19 @@ class GoogleLoginView(APIView):
             )
         except ValueError:
             return Response({'detail': 'Invalid idToken'}, status=status.HTTP_400_BAD_REQUEST)
-        email      = payload.get('email')
+        email = payload.get('email')
         first_name = payload.get('given_name', '')
-        last_name  = payload.get('family_name', '')
+        last_name = payload.get('family_name', '')
         if not email:
             return Response({'detail': 'No email'}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.filter(email__iexact=email).first()
         created = False
         if not user:
             random_pass = User.objects.make_random_password()
-            user = User.objects.create_user(
-                email=email,
-                password=random_pass,
-                first_name=first_name,
-                last_name=last_name,
-            )
+            user = User.objects.create_user( email=email, password=random_pass, first_name=first_name, last_name=last_name )
             user.set_unusable_password()
             user.save(update_fields=['password'])
-            UserWallet.objects.create(
-                user=user,
-                amount92=0, amount95=0,
-                amount100=0, amountGas=0,
-                amountDiesel=0
-            )
+            UserWallet.objects.create( user=user, amount92=0, amount95=0, amount100=0, amountGas=0, amountDiesel=0)
             created = True
         refresh = RefreshToken.for_user(user)
         return Response({
