@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import (AllFuelTransactionsView, CreateUserView, EmailTokenObtainPairView, GoogleLoginView, UserProfileView, 
+from api.views import (AllFuelTransactionsView, CreateUserView, EmailTokenObtainPairView, FuelStatisticsAPI, GoogleLoginView, UserProfileView, 
                        UserWalletView, GasStationViewSet, FuelTransactionViewSet, ValidatePromoView,
                          GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView, LiqPayCallbackView, 
                          LiqPayResultView, UserAchievementsView, CurrentUserRolesOnlyView, CreateOneTimeSuperuserView)
@@ -46,6 +46,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path('api/auth/google/', GoogleLoginView.as_view(), name='google_login'),
     path('api/transactions/all/', AllFuelTransactionsView.as_view(), name='all_transactions'),
+    path('api/fuel-statistics/', FuelStatisticsAPI.as_view(), name='fuel-statistics'),
     
     path('api/promo/validate/', ValidatePromoView.as_view(), name='promo_validate'),
 

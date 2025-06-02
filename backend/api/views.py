@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 import hashlib
 import os
 import random
@@ -32,7 +33,7 @@ from django.conf import settings
 from liqpay import LiqPay
 import uuid
 from django.db import transaction
-
+from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -237,6 +238,39 @@ class AllFuelTransactionsView(generics.ListAPIView):
     queryset = FuelTransaction.objects.all()
     serializer_class = FuelTransactionSerializer
     permission_classes = [AllowAny]
+
+class FuelStatisticsAPI(APIView):
+    def get(self, request):
+        date_from = request.GET.get('date_from')
+        date_to = request.GET.get('date_to')
+        try:
+            if date_from:
+                date_from = datetime.strptime(date_from, '%d.%m.%Y').date()
+            if date_to:
+                date_to = datetime.strptime(date_to, '%d.%m.%Y').date()
+        except ValueError:
+            return Response({'error': 'Invalid date format. Use DD.MM.YYYY'}, status=400)
+        queryset = FuelTransaction.objects.filter(transaction_type='sell')
+        if date_from:
+            queryset = queryset.filter(date__date__gte=date_from)
+        if date_to:
+            queryset = queryset.filter(date__date__lte=date_to)
+        fuel_stats = queryset.values('fuel_type').annotate(
+            total_quantity=Sum('amount'),
+            total_amount=Sum('price')
+        ).order_by('-total_quantity')
+        total_stats = queryset.aggregate(
+            total_fuel=Sum('amount'),
+            total_cash=Sum('price')
+        )
+        response_data = {
+            'fuel_data': list(fuel_stats),
+            'total_data': {
+                'totalFuel': total_stats['total_fuel'] or 0,
+                'totalCash': total_stats['total_cash'] or 0
+            }
+        }
+        return Response(response_data)
 
 class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     queryset = GlobalFuelPrice.objects.all()
