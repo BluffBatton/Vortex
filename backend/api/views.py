@@ -147,6 +147,13 @@ class GasStationViewSet(viewsets.ModelViewSet):
     serializer_class = GasStationSerializer
     #permission_classes = [IsAdminUser] 
     permission_classes = [AllowAny]
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated],
+        url_path='my-stations'
+    )
 
     def my_stations(self, request):
         user = request.user
