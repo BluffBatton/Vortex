@@ -170,7 +170,6 @@ class GasStationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-
 class FuelTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = FuelTransactionSerializer
     permission_classes = [IsAuthenticated]
@@ -234,7 +233,10 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(tx)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
+class AllFuelTransactionsView(generics.ListAPIView):
+    queryset = FuelTransaction.objects.all()
+    serializer_class = FuelTransactionSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     queryset = GlobalFuelPrice.objects.all()
