@@ -128,3 +128,34 @@
 	padding-right: 100px;
 	box-sizing: border-box;
 }
+
+.station-info {
+	font-family: 'Comic Sans MS', sans-serif;
+	font-size: 14px;
+	color: #0d4c49;
+	max-width: 220px;
+	line-height: 1.4;
+}
+
+.station-info h3 {
+	margin: 0 0 6px 0;
+	font-size: 16px;
+	color: #0d4c49;
+	font-weight: 700;
+}
+
+.station-info p {
+	margin: 0 0 8px 0;
+	font-size: 13px;
+}
+
+.station-info ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.station-info li {
+	margin-bottom: 3px;
+	font-size: 13px;
+}

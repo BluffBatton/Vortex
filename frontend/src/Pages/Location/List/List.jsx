@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './List.css'
 import { Link } from 'react-router-dom'
+import { API_BASE_URL } from '../../../api.js'
 
 import {
 	Phone,
@@ -9,62 +10,14 @@ import {
 	iconStation,
 } from '../../../Assets/Assets.js'
 
-const locationsMock = [
-	{ city: 'Lviv', address: '123 Stryiska Street, Lviv, Lviv Oblast, Ukraine' },
-	{
-		city: 'Kharkiv',
-		address: '45 Heroiv Pratsi Avenue, Kharkiv, Kharkiv Oblast, Ukraine',
-	},
-	{
-		city: 'Dnipro',
-		address: '77 Yavornytskogo Avenue, Dnipro, Dnipropetrovsk Oblast, Ukraine',
-	},
-	{
-		city: 'Zaporizhzhia',
-		address: '10 Sobornyi Avenue, Zaporizhzhia, Zaporizhzhia Oblast, Ukraine',
-	},
-	{
-		city: 'Mykolaiv',
-		address: '34 Central Avenue, Mykolaiv, Mykolaiv Oblast, Ukraine',
-	},
-	{
-		city: 'Kropyvnytskyi',
-		address:
-			'8 Velyka Perspektvyna Street, Kropyvnytskyi, Kirovohrad Oblast, Ukraine',
-	},
-	{
-		city: 'Vinnytsia',
-		address: '21 Kyivska Street, Vinnytsia, Vinnytsia Oblast, Ukraine',
-	},
-	{
-		city: 'Zhytomyr',
-		address: '16 Peremohy Avenue, Zhytomyr, Zhytomyr Oblast, Ukraine',
-	},
-	{
-		city: 'Poltava',
-		address: '99 Sobornosti Street, Poltava, Poltava Oblast, Ukraine',
-	},
-	{
-		city: 'Cherkasy',
-		address: '5 Smilianska Street, Cherkasy, Cherkasy Oblast, Ukraine',
-	},
-	{ city: 'Sumy', address: '12 Kharkivska Street, Sumy, Sumy Oblast, Ukraine' },
-	{
-		city: 'Ternopil',
-		address: '25 Ruska Street, Ternopil, Ternopil Oblast, Ukraine',
-	},
-	{
-		city: 'Khmelnytskyi',
-		address:
-			'18 Kamianetska Street, Khmelnytskyi, Khmelnytskyi Oblast, Ukraine',
-	},
-]
-
 const List = () => {
 	const [locations, setLocations] = useState([])
 
 	useEffect(() => {
-		setLocations(locationsMock)
+		fetch(`${API_BASE_URL}/api/gas-stations/`)
+			.then(res => res.json())
+			.then(data => setLocations(data))
+			.catch(error => console.error('Failed to load locations:', error))
 	}, [])
 
 	return (
@@ -86,7 +39,7 @@ const List = () => {
 				<ul className='list-network-map__stations'>
 					{locations.map((loc, index) => (
 						<li key={index}>
-							<strong>{loc.city}</strong>
+							<strong>{loc.name}</strong>
 							<br />
 							{loc.address}
 						</li>

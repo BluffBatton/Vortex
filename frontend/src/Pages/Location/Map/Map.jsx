@@ -1,7 +1,14 @@
-import React from 'react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import React, { useState, useEffect } from 'react'
+import {
+	GoogleMap,
+	Marker,
+	InfoWindow,
+	useJsApiLoader,
+} from '@react-google-maps/api'
 import './Map.css'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { API_BASE_URL } from '../../../api.js'
 
 import {
 	Phone,
@@ -10,25 +17,54 @@ import {
 	iconStation,
 } from '../../../Assets/Assets.js'
 
-const stations = [
-	{ name: 'Kyiv', lat: 50.4501, lng: 30.5234 },
-	{ name: 'Lviv', lat: 49.8397, lng: 24.0297 },
-	{ name: 'Odesa', lat: 46.4825, lng: 30.7233 },
-	{ name: 'Dnipro', lat: 48.4647, lng: 35.0462 },
-	{ name: 'Kharkiv', lat: 49.9935, lng: 36.2304 },
-]
-
 const containerStyle = {
 	width: '100%',
 	height: '500px',
 }
 
-const center = stations[0] // center of map on first station
-
 const Map = () => {
 	const { isLoaded } = useJsApiLoader({
 		googleMapsApiKey: 'AIzaSyC5D4Eeb95fRyUciLIDLpWhrW2sEfjpm8Y',
 	})
+
+	const [stations, setStations] = useState([])
+	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState(null)
+	const [selectedStation, setSelectedStation] = useState(null)
+
+	useEffect(() => {
+		const fetchStations = async () => {
+			try {
+				const response = await axios.get(`${API_BASE_URL}/api/gas-stations/`)
+				setStations(
+					response.data.map(station => ({
+						id: station.id,
+						name: station.name,
+						lat: parseFloat(station.latitude),
+						lng: parseFloat(station.longitude),
+						address: station.address,
+						price92: station.price92,
+						price95: station.price95,
+						price100: station.price100,
+						priceGas: station.priceGas,
+						priceDiesel: station.priceDiesel,
+					}))
+				)
+				setLoading(false)
+			} catch (err) {
+				console.error('Error fetching gas stations:', err)
+				setError('Failed to load gas stations data')
+				setLoading(false)
+			}
+		}
+
+		fetchStations()
+	}, [])
+
+	const center =
+		stations.length > 0
+			? { lat: stations[0].lat, lng: stations[0].lng }
+			: { lat: 50.4501, lng: 30.5234 }
 
 	return (
 		<main className='map_main'>
@@ -48,19 +84,47 @@ const Map = () => {
 			</section>
 
 			<div className='map-container'>
-				{isLoaded ? (
+				{loading ? (
+					<p>Loading stations data...</p>
+				) : error ? (
+					<p className='error-message'>{error}</p>
+				) : isLoaded ? (
 					<GoogleMap
 						mapContainerStyle={containerStyle}
 						center={center}
-						zoom={6}
+						zoom={stations.length > 0 ? 8 : 5}
 					>
-						{stations.map((station, i) => (
+						{stations.map(station => (
 							<Marker
-								key={i}
+								key={station.id}
 								position={{ lat: station.lat, lng: station.lng }}
-								title={station.name}
+								title={`${station.name} (${station.address})`}
+								label={station.name}
+								onClick={() => setSelectedStation(station)}
 							/>
 						))}
+
+						{selectedStation && (
+							<InfoWindow
+								position={{
+									lat: selectedStation.lat,
+									lng: selectedStation.lng,
+								}}
+								onCloseClick={() => setSelectedStation(null)}
+							>
+								<div className='station-info'>
+									<h3>{selectedStation.name}</h3>
+									<p>{selectedStation.address}</p>
+									<ul>
+										<li>92: {selectedStation.price92} ₴</li>
+										<li>95: {selectedStation.price95} ₴</li>
+										<li>100: {selectedStation.price100} ₴</li>
+										<li>Gas: {selectedStation.priceGas} ₴</li>
+										<li>Diesel: {selectedStation.priceDiesel} ₴</li>
+									</ul>
+								</div>
+							</InfoWindow>
+						)}
 					</GoogleMap>
 				) : (
 					<p>Loading map...</p>
