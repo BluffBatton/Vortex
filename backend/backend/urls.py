@@ -3,7 +3,7 @@ from django.urls import path, include
 from api.views import (CreateUserView, EmailTokenObtainPairView, GoogleLoginView, UserProfileView, 
                        UserWalletView, GasStationViewSet, FuelTransactionViewSet, ValidatePromoView,
                          GlobalFuelPriceViewSet, ModeratorViewSet,LiqPayPayView, LiqPayCallbackView, 
-                         LiqPayResultView, UserAchievementsView, CurrentUserRolesOnlyView)
+                         LiqPayResultView, UserAchievementsView, CurrentUserRolesOnlyView, CreateOneTimeSuperuserView)
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from django.http import JsonResponse
@@ -38,6 +38,8 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     
     path('api/ping/', ping_view),
+
+    path('create-superuser-once/', CreateOneTimeSuperuserView.as_view(), name='create_one_time_super'),
     
     path('api/achievements', UserAchievementsView.as_view(), name='user_achievements'),
     
