@@ -236,7 +236,7 @@ class FuelTransactionViewSet(viewsets.ModelViewSet):
 class AllFuelTransactionsView(generics.ListAPIView):
     queryset = FuelTransaction.objects.all()
     serializer_class = FuelTransactionSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [AllowAny]
 
 class GlobalFuelPriceViewSet(viewsets.ModelViewSet):
     queryset = GlobalFuelPrice.objects.all()
