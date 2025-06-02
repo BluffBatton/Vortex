@@ -135,6 +135,7 @@ export const AuthProvider = ({ children }: any) => {
 
       const googleLogin = async () => {
         try {
+          await GoogleSignin.signOut();
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           await GoogleSignin.signIn();
           const { idToken } = await GoogleSignin.getTokens();

@@ -1,4 +1,5 @@
 // src/screens/RegisterScreen.tsx
+import { validateEmail, validatePhone, validatePassword } from '../utils/validation';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -13,20 +14,20 @@ const RegisterScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false);
   const { onRegister } = useAuth();
 
-  const validateEmail = (email: string): boolean => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
-  };
+  // const validateEmail = (email: string): boolean => {
+  //   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return re.test(String(email).toLowerCase());
+  // };
 
-  const validatePhone = (phone: string): boolean => {
-    const re = /^\+380\d{9}$/;
-    return re.test(phone);
-  };
+  // const validatePhone = (phone: string): boolean => {
+  //   const re = /^\+380\d{9}$/;
+  //   return re.test(phone);
+  // };
 
-  const validatePassword = (password: string): boolean => {
-    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // min 8 symb, 1 letter and 1 numb
-    return re.test(password);
-  };
+  // const validatePassword = (password: string): boolean => {
+  //   const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // min 8 symb, 1 letter and 1 numb
+  //   return re.test(password);
+  // };
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !phone || !email || !password) {
