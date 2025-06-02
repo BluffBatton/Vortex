@@ -34,7 +34,7 @@ interface AuthProps{
 const TOKEN_KEY = "jwt";
 const REFRESH_TOKEN = "refresh";
 export const API_URL = "https://gregarious-happiness-production.up.railway.app";
-
+// https://gregarious-happiness-production.up.railway.app/api/global-fuel-prices/
 //export const ALT_API_URL = "https://eager-dingos-behave.loca.lt"
 
 const AuthContext = createContext<AuthProps>({} as AuthProps);
@@ -147,6 +147,7 @@ export const AuthProvider = ({ children }: any) => {
 
       const googleLogin = async () => {
         try {
+          await GoogleSignin.signOut();
           await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
           await GoogleSignin.signIn();
           const { idToken } = await GoogleSignin.getTokens();
