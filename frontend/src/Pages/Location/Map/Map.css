@@ -159,3 +159,17 @@
 	margin-bottom: 3px;
 	font-size: 13px;
 }
+
+.station-label {
+	position: absolute;
+	transform: translate(-48%, -280%);
+	padding: 2px 5px;
+	border-radius: 3px;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black,
+		1px 1px 0 black;
+	white-space: nowrap;
+	pointer-events: none;
+}

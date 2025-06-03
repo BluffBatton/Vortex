@@ -9,6 +9,7 @@ import './Map.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { API_BASE_URL } from '../../../api.js'
+import { OverlayView } from '@react-google-maps/api'
 
 import {
 	Phone,
@@ -92,16 +93,23 @@ const Map = () => {
 					<GoogleMap
 						mapContainerStyle={containerStyle}
 						center={center}
-						zoom={stations.length > 0 ? 8 : 5}
+						zoom={stations.length > 0 ? 7 : 5}
 					>
 						{stations.map(station => (
-							<Marker
-								key={station.id}
-								position={{ lat: station.lat, lng: station.lng }}
-								title={`${station.name} (${station.address})`}
-								label={station.name}
-								onClick={() => setSelectedStation(station)}
-							/>
+							<React.Fragment key={station.id}>
+								<Marker
+									position={{ lat: station.lat, lng: station.lng }}
+									title={`${station.name} (${station.address})`}
+									onClick={() => setSelectedStation(station)}
+								/>
+
+								<OverlayView
+									position={{ lat: station.lat, lng: station.lng }}
+									mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+								>
+									<div className='station-label'>{station.name}</div>
+								</OverlayView>
+							</React.Fragment>
 						))}
 
 						{selectedStation && (
