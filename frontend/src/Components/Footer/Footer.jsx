@@ -39,20 +39,24 @@ const Footer = () => {
 				</Link>
 				<div class='footer__socials'>
 					<a
-						href='https://linkedin.com/'
+						href='https://www.linkedin.com/in/vortex-company'
 						target='_blank'
 						rel='noopener noreferrer'
 					>
 						<img src={iconLink} alt='LinkedIn' />
 					</a>
 					<a
-						href='https://www.instagram.com/'
+						href='https://www.instagram.com/1_vortex1/'
 						target='_blank'
 						rel='noopener noreferrer'
 					>
 						<img src={iconInst} alt='Instagram' />
 					</a>
-					<a href='https://x.com/' target='_blank' rel='noopener noreferrer'>
+					<a
+						href='https://x.com/1_Vortex1'
+						target='_blank'
+						rel='noopener noreferrer'
+					>
 						<img src={iconX} alt='X' />
 					</a>
 				</div>
