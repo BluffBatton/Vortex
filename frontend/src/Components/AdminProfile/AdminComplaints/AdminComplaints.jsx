@@ -13,31 +13,31 @@ const AdminComplaints = () => {
 			id: 1,
 			date: '20.05.2025',
 			viewed: false,
-			description: 'Vladik: меня обидели',
+			description: 'Vladik: Topic1',
 		},
 		{
 			id: 2,
 			date: '15.05.2025',
 			viewed: false,
-			description: 'Oleksandr: набили будку в чугуеве',
+			description: 'Oleksandr: Topic2',
 		},
 		{
 			id: 3,
 			date: '12.05.2025',
 			viewed: true,
-			description: 'Denys: запретили оценивать красивых девушек',
+			description: 'Denys: Topic3',
 		},
 		{
 			id: 4,
 			date: '10.05.2025',
 			viewed: false,
-			description: 'Jorik: послали нахуй',
+			description: 'Jorik: Topic4',
 		},
 		{
 			id: 5,
 			date: '08.05.2025',
 			viewed: false,
-			description: 'Vitaliy: Mi amore, mi amore',
+			description: 'Vitaliy: Topic5',
 		},
 	])
 
@@ -86,11 +86,12 @@ const AdminComplaints = () => {
 
 	const openModal = description => {
 		const [sender, ...rest] = description.split(':')
-		const complaintText = rest.join(':').trim()
+		const title = rest.join(':').trim()
+
 		setSelectedComplaint({
 			sender: sender.trim(),
-			title: 'Complaint Title Placeholder',
-			message: complaintText,
+			title: title,
+			message: 'Complaint Message Placeholder',
 		})
 		setModalOpen(true)
 	}

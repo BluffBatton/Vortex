@@ -1,5 +1,6 @@
 import React from 'react'
 import './AdminSidebar.css'
+import { useNavigate } from 'react-router-dom'
 
 import {
 	iconProfile,
@@ -9,7 +10,8 @@ import {
 } from '../../../Assets/Assets'
 
 const AdminSidebar = ({ activeTab, onTabChange }) => {
-	const userName = 'Jonis Barabulka'
+	const userName = 'Admin'
+	const navigate = useNavigate()
 
 	const navItems = [
 		{ id: 'price', label: 'Price change' },
@@ -18,6 +20,13 @@ const AdminSidebar = ({ activeTab, onTabChange }) => {
 		{ id: 'moderators', label: 'Manage Moderators' },
 		{ id: 'complaints', label: 'Complaints' },
 	]
+
+	const handleLogout = () => {
+		localStorage.removeItem('access')
+		localStorage.removeItem('refresh')
+		localStorage.removeItem('user')
+		navigate('/')
+	}
 
 	return (
 		<div className='adminsidebar-sidebar'>
@@ -43,7 +52,7 @@ const AdminSidebar = ({ activeTab, onTabChange }) => {
 					className='adminsidebar-user-avatar'
 				/>
 				<div className='adminsidebar-user-name'>{userName}</div>
-				<button className='adminsidebar-logout'>
+				<button className='adminsidebar-logout' onClick={handleLogout}>
 					<img
 						src={iconLogOut}
 						alt='Logout'

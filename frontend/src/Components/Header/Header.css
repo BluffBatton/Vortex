@@ -12,54 +12,50 @@
 	padding: 0 20px;
 }
 
-/* Общие стили для всех flex-элементов */
 .header__menu,
 .header__logo-block,
 .header__auth {
-	flex: 1; /* Равномерное распределение пространства */
+	flex: 1;
 	display: flex;
-	justify-content: center; /* Центрируем содержимое каждого блока */
+	justify-content: center;
 }
 
-/* Стили для меню */
 .header__menu {
 	display: flex;
 	list-style: none;
 	margin: 0;
-	padding: 0 40px; /* Отступы от краев */
-	justify-content: space-between; /* Равномерное распределение */
-	width: 100%; /* Занимает всю доступную ширину */
+	padding: 0 40px;
+	justify-content: space-between;
+	width: 100%;
 }
 
 .header__menu li {
 	flex: 1;
 	text-align: center;
 	position: relative;
-	height: 100%; /* Растягиваем на всю высоту хедера */
+	height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: background-color 0.3s ease; /* Плавное изменение фона */
+	transition: background-color 0.3s ease;
 }
 
 .header__menu li:hover {
-	background-color: white; /* Белый фон при наведении */
+	background-color: white;
 }
 
 .header__menu li:hover .header__link {
-	color: rgb(65, 158, 165); /* Черный текст при наведении (если нужно) */
-	/* Или оставить исходный цвет: color: #0d4c49; */
+	color: rgb(65, 158, 165);
 }
 
 .header__menu li:first-child {
-	text-align: center; /* Первый элемент прижимаем влево */
+	text-align: center;
 }
 
 .header__menu li:last-child {
-	text-align: center; /* Последний элемент прижимаем вправо */
+	text-align: center;
 }
 
-/* Авторизация - крайний правый элемент */
 .header__auth {
 	justify-content: flex-end;
 	gap: 10px;
@@ -67,7 +63,6 @@
 	max-width: 120px;
 }
 
-/* Остальные стили остаются без изменений */
 .header__link {
 	text-decoration: none;
 	color: #0d4c49;
@@ -101,7 +96,6 @@
 	color: #0d4c49;
 }
 
-/* Опционально: hover-эффекты */
 .header__logo-link:hover .header__logo {
 	opacity: 0.8;
 }
@@ -123,7 +117,7 @@
 	display: flex;
 	align-items: center;
 	text-align: center;
-	white-space: nowrap; /* Добавляем это свойство */
+	white-space: nowrap;
 }
 
 .header__auth {
@@ -139,21 +133,17 @@
 	border-radius: 4px;
 }
 
-/* Эффект при наведении на весь блок */
 .header__auth:hover {
 	background-color: rgba(65, 158, 165, 0.2);
 }
 
-/* Изменение цвета иконки при наведении */
 .header__auth:hover .header__user-icon {
 	filter: invert(56%) sepia(43%) saturate(435%) hue-rotate(130deg)
 		brightness(89%) contrast(87%);
 }
 
-/* Изменение цвета текста при наведении */
 .header__auth:hover .header__signin {
 	color: rgb(65, 158, 165);
 	font-weight: 600;
-	/* Добавляем минимальную ширину, равную исходной ширине текста */
-	min-width: calc(16px * 3.5); /* Примерный расчет (font-size * кол-во букв) */
+	min-width: calc(16px * 3.5);
 }
