@@ -307,7 +307,7 @@ const AdminStation = () => {
 											<span>Diesel: {station.priceDiesel} ₴</span>
 										</div>
 										<span className='adminstation-list-moderator'>
-											Moderator:{' '}
+											{' '}
 											{station.moderator.first_name
 												? `${station.moderator.first_name} ${station.moderator.last_name}`
 												: station.moderator.email}
