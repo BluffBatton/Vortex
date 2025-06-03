@@ -77,7 +77,7 @@ const PurchaseHistory = () => {
 		<section className='acchistory-content'>
 			<h2 className='acchistory-title'>Purchase history</h2>
 			{purchases.length === 0 ? (
-				<div className='acchistory-empty'>No purchases found</div>
+				<div className='acchistory-empty'>No history yet...</div>
 			) : (
 				<div className='acchistory-history-wrapper'>
 					{purchases.map(item => (

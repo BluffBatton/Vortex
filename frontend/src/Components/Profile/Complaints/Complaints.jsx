@@ -6,9 +6,19 @@ const Complaints = () => {
 	const [message, setMessage] = useState('')
 
 	const handleSend = () => {
-		// api send
+		if (subject.trim() === '') {
+			alert('Fill the subject message')
+			return
+		}
+
+		// Здесь может быть ваш API-запрос
 		console.log('Subject:', subject)
 		console.log('Message:', message)
+
+		// Очистка полей
+		setSubject('')
+		setMessage('')
+		alert('Message successfully sent')
 	}
 
 	return (
